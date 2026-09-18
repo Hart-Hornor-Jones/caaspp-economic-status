@@ -5,189 +5,159 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>CAASPP grade-11 mathematics by economic status</title>
 <style>
-  :root{ --ink:#1a1a1a; --muted:#5c6470; --line:#e2e6ec; --bg:#ffffff; --card:#fbfcfe; --accent:#2b6cb0;
-         --a:#d7642a; --b:#2e74b5; --shadow:0 1px 3px rgba(20,30,50,.07),0 6px 24px rgba(20,30,50,.06); }
-  *{box-sizing:border-box}
-  body{margin:0;color:var(--ink);background:var(--bg);
-    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;font-size:15px;line-height:1.5;-webkit-font-smoothing:antialiased;}
-  .wrap{max-width:1100px;margin:0 auto;padding:22px 20px 60px;}
-  header h1{font-size:23px;margin:0 0 4px;letter-spacing:-.01em;}
-  header p.sub{margin:0;color:var(--muted);max-width:780px;}
-  a{color:var(--accent);}
-  .controls{display:flex;flex-wrap:wrap;gap:12px 16px;align-items:flex-end;margin:18px 0 14px;padding:14px 16px;
-    background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);}
-  .ctl{display:flex;flex-direction:column;gap:5px;}
-  .ctl.hide{display:none;}
-  .ctl label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);}
-  select,input[type=text]{font:inherit;padding:7px 9px;border:1px solid #cfd6e0;border-radius:8px;background:#fff;color:var(--ink);width:auto;max-width:100%;}
-  input[type=text]{min-width:460px;}
-  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);}
-  .chartcard{padding:8px 8px 4px;position:relative;}
-  .plot-title{font-size:13px;font-weight:600;padding:8px 150px 0 10px;}
-  .plot-sub{font-size:12px;color:var(--muted);padding:0 150px 6px 10px;}
-  svg{display:block;width:100%;height:auto;}
-  .chartbar{position:absolute;right:12px;top:10px;z-index:6;}
-  .exportwrap{position:relative;}
-  .exportbtn{font:inherit;font-size:11px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.92);border:1px solid #cfd6e0;border-radius:7px;padding:3px 9px;cursor:pointer;}
-  .exportbtn:hover{background:#f0f5fb;}
-  .exportmenu{display:none;position:absolute;right:0;top:26px;min-width:250px;background:#fff;border:1px solid #cfd6e0;border-radius:9px;
-    box-shadow:0 8px 28px rgba(20,30,50,.16);padding:6px 0;text-align:left;}
-  .exportmenu.open{display:block;}
-  .exportmenu button{display:block;width:100%;font:inherit;font-size:12.5px;text-align:left;border:0;background:none;padding:6px 12px;cursor:pointer;color:var(--ink);}
-  .exportmenu button:hover{background:#f0f5fb;}
-  .exportmenu button small{display:block;font-size:10.5px;color:var(--muted);}
-  .exportmenu .hd{font-size:10px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);padding:5px 12px 2px;}
-  .exportmenu .sep{border-top:1px solid var(--line);margin:4px 0;}
-  .exportnote{position:absolute;left:12px;bottom:10px;font-size:11px;color:var(--muted);background:rgba(255,255,255,.92);border:1px solid var(--line);
-    border-radius:7px;padding:3px 8px;opacity:0;transition:opacity .15s;pointer-events:none;}
-  .exportnote.show{opacity:1;}
-  .legend{display:flex;flex-wrap:wrap;gap:6px 18px;font-size:12px;color:var(--muted);padding:4px 12px 8px;}
-  .legend .sw{display:inline-block;width:18px;height:3px;margin-right:6px;vertical-align:3px;}
-  .tooltip{position:fixed;pointer-events:none;background:#11151c;color:#fff;font-size:12px;padding:8px 10px;border-radius:8px;max-width:260px;opacity:0;transition:opacity .08s;z-index:50;}
-  .tooltip .tl{color:#aeb6c2;}
-  table.nums{border-collapse:collapse;font-size:12.5px;margin:14px 0 0;font-variant-numeric:tabular-nums;}
-  table.nums th,table.nums td{padding:4px 12px 4px 0;text-align:right;border-bottom:1px solid var(--line);}
-  table.nums th{font-weight:600;color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.04em;}
-  table.nums td:first-child,table.nums th:first-child{text-align:left;}
-  table.nums tr.hl td{background:#f0f5fb;}
-  .tblnote{font-size:11.5px;color:var(--muted);margin:6px 0 0;}
-  details.notes{margin-top:22px;border:1px solid var(--line);border-radius:12px;background:var(--card);padding:0 16px;}
-  details.notes summary{cursor:pointer;font-weight:600;padding:13px 0;}
-  details.notes div{padding:0 0 14px;color:#3a4150;font-size:13.5px;}
-  details.notes li{margin:5px 0;}
-  footer{margin-top:26px;color:var(--muted);font-size:12px;line-height:1.6;border-top:1px solid var(--line);padding-top:14px;}
-  @media (max-width:700px){ .plot-title,.plot-sub{padding-right:10px;} .chartbar{position:static;padding:0 10px 6px;}
-    .ctl{width:100%;} select,input[type=text]{min-width:0;width:100%;} }
+:root{--red:#FB0207;--blue:#0000FF;--green:#118040}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#fff;color:#000;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700}
+.page{max-width:1180px;margin:0 auto;padding:22px 20px 40px}
+.bigtitle{text-align:center;font-size:23px;line-height:1.35;margin:2px 0 4px}
+.subtitle{text-align:center;font-size:14px;margin:0 auto 14px;max-width:900px}
+a{color:#000}
+.topbar{display:flex;align-items:center;gap:14px;margin:0 0 14px;flex-wrap:wrap}
+.ctlbtn{font:inherit;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border:2.5px solid #000;background:#fff;color:#000;padding:5px 10px;cursor:pointer}
+.ctlbtn[aria-pressed=true]{background:#000;color:#fff}
+.wrap{display:flex;gap:30px;align-items:flex-start}
+.side{width:300px;flex:0 0 300px}
+.side.hidden{display:none}
+.panelbox{border:2.5px solid #000;background:#fff;padding:14px 16px 16px;margin-bottom:18px}
+.panelbox h3{margin:0 0 10px;font-size:13px;letter-spacing:.02em;text-transform:uppercase}
+.ctl{margin-bottom:14px}.ctl:last-child{margin-bottom:2px}
+.ctl.hide{display:none}
+.ctl .lab{font-size:12.5px;margin-bottom:5px}
+.ctl .sublab{font-size:11px;color:#555;margin:6px 0 2px}
+label.opt{display:flex;align-items:flex-start;gap:7px;font-size:12.5px;padding:2.5px 0;cursor:pointer;line-height:1.25}
+label.opt input{accent-color:#000;margin:2px 0 0;cursor:pointer;flex:0 0 auto}
+.seg{display:flex;border:2.5px solid #000}
+.seg button{flex:1;border:none;background:#fff;color:#000;font:inherit;font-size:12px;padding:5px 2px;cursor:pointer}
+.seg button+button{border-left:2.5px solid #000}
+.seg button[aria-pressed=true]{background:#000;color:#fff}
+input[type=text]{font:inherit;font-size:12.5px;border:2px solid #000;background:#fff;color:#000;padding:3px 5px;width:100%}
+.note{font-size:11px;line-height:1.45;margin-top:8px}
+.charts{flex:1;min-width:0}
+.fig{margin:0 0 24px}
+.figtitle{font-size:17px;line-height:1.3;margin:0 0 2px}
+.figsub{font-size:12.5px;margin:0 0 8px;font-weight:400}
+.fighead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700;fill:#000}
+.exportwrap{position:relative;flex:0 0 auto}
+.exportmenu{display:none;position:absolute;right:0;top:34px;min-width:270px;background:#fff;border:2.5px solid #000;padding:4px 0;text-align:left;z-index:20}
+.exportmenu.open{display:block}
+.exportmenu button{display:block;width:100%;font:inherit;font-size:12px;text-align:left;border:0;background:none;padding:5px 12px;cursor:pointer;color:#000}
+.exportmenu button:hover{background:#000;color:#fff}
+.exportmenu button small{display:block;font-size:10.5px;font-weight:400}
+.exportmenu .hd{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:5px 12px 2px;color:#555}
+.exportmenu .sep{border-top:2px solid #000;margin:4px 0}
+.exportnote{font-size:11.5px;margin:6px 0 0;min-height:16px}
+table.nums{border-collapse:collapse;font-size:12px;margin:10px 0 0;border-top:2.5px solid #000;border-bottom:2.5px solid #000}
+table.nums th,table.nums td{padding:4px 14px 4px 0;text-align:right}
+table.nums td{white-space:nowrap}
+table.nums th{font-size:11px;border-bottom:2px solid #000;vertical-align:bottom;max-width:150px}
+#tablewrap{overflow-x:auto}
+table.nums td:first-child,table.nums th:first-child{text-align:left}
+table.nums tr.hl td{background:#000;color:#fff}
+.tblnote{font-size:11px;font-weight:400;margin:6px 0 0}
+#tip{position:fixed;display:none;background:#fff;border:2.5px solid #000;padding:9px 12px;font-size:12px;line-height:1.5;pointer-events:none;z-index:50;max-width:320px}
+#tip .h{font-size:12.5px;margin-bottom:3px}
+.footer{text-align:center;margin-top:18px;padding:0 30px}
+.footer .l1{font-size:14px;line-height:1.55}
+.footer .l2{font-size:12px;margin-top:4px}
+@media(max-width:900px){.wrap{flex-direction:column}.side{width:100%;flex:auto}}
 </style>
 </head>
-<body>
+<body><div class="page">
+<div class="bigtitle">CAASPP grade-11 mathematics, by economic status</div>
+<div class="subtitle">California, spring 2015 to spring 2025. Economically disadvantaged students compared with all other
+students: statewide, across high schools grouped by LCFF+ status, or within one high school. The data behind the page are in
+the repository's <a id="dataLink" href="data/">data folder</a>.</div>
+<div class="topbar"><button class="ctlbtn" id="ctltoggle" aria-pressed="false">Chart controls &#9656;</button><span style="font-size:12px">Hover any point for the numbers.</span></div>
 <div class="wrap">
-  <header>
-    <h1>CAASPP grade-11 mathematics, by economic status</h1>
-    <p class="sub">Two lines: economically disadvantaged students and everyone else. Choose the comparison (all
-    California students, high schools grouped by LCFF+ status, or the two groups inside one high school) and the
-    measure. The data behind the page, and a good deal more, are in the repository's
-    <a id="dataLink" href="data/">data folder</a>.</p>
-  </header>
-
-  <div class="controls">
-    <div class="ctl"><label for="level">Compare</label>
-      <select id="level">
-        <option value="state">All California students</option>
-        <option value="schools">High schools: LCFF+ vs. other</option>
-        <option value="school">Within one high school</option>
-      </select></div>
-    <div class="ctl"><label for="measure">Measure</label><select id="measure"></select></div>
-    <div class="ctl" id="ctlWeight"><label for="weight">Average across</label>
-      <select id="weight"><option value="students">Students</option><option value="schools">Schools</option></select></div>
-    <div class="ctl" id="ctlPanel"><label for="panel">Schools included</label>
-      <select id="panel"><option value="all">All reporting that year</option><option value="fixed">Same schools every year</option></select></div>
-    <div class="ctl" id="ctlSchool"><label for="school">High school</label>
-      <input type="text" id="school" list="schoollist" placeholder="Type a school name" /><datalist id="schoollist"></datalist></div>
-  </div>
-
-  <div class="card chartcard">
-    <div class="plot-title" id="plotTitle"></div>
-    <div class="plot-sub" id="plotSub"></div>
-    <div class="chartbar"><div class="exportwrap">
-      <button class="exportbtn" id="exportBtn" title="Download this chart with its title and source line">Export figure &#9662;</button>
-      <div class="exportmenu" id="exportMenu">
-        <div class="hd">Vector (any resolution)</div>
-        <button data-x="svg">SVG<small>opens in Illustrator, Inkscape, Word, PowerPoint; scales without loss</small></button>
-        <button data-x="pdf">PDF<small>opens the print dialog sized to the figure &mdash; choose &ldquo;Save as PDF&rdquo;</small></button>
-        <div class="hd">Raster</div>
-        <button data-x="png2">PNG at 2&times;<small>screen / web</small></button>
-        <button data-x="png4">PNG at 4&times;<small>print</small></button>
-        <button data-x="copy">Copy PNG to clipboard<small>2&times;; paste straight into a document</small></button>
-        <div class="sep"></div>
-        <div class="hd">Data behind this chart</div>
-        <button data-x="csv">CSV of the plotted series<small>one row per year: both groups, the gap, students tested</small></button>
-      </div>
-    </div></div>
-    <div class="exportnote" id="exportNote"></div>
-    <svg id="chart"></svg>
-    <div class="legend" id="legend"></div>
-  </div>
-
-  <div id="tablewrap"></div>
-
-  <details class="notes">
-    <summary>Definitions and notes</summary>
-    <div>
-      <ul>
-        <li><b>Economically disadvantaged</b> is the California Department of Education's student group (called
-          &ldquo;socioeconomically disadvantaged&rdquo; in the research files and &ldquo;economically disadvantaged&rdquo; on the
-          CAASPP reporting site): students eligible for free or reduced-price meals, or whose parents did not complete high
-          school, or who are migrant, homeless, or foster youth. CDE's definition changed in 2022&ndash;23, when the number of
-          grade-11 students counted as disadvantaged rose by about a tenth; the two lines are not strictly comparable across that
-          year.</li>
-        <li><b>LCFF+</b> high schools are those where more than 75% of enrollment is low-income, English learner, or foster youth
-          (the unduplicated pupil percentage, UPP). Schools are classified once, on their average UPP over 2016&ndash;17 to 2019&ndash;20,
-          so the two groups of schools do not change from year to year. The comparison uses each school's all-students grade-11
-          mathematics results. &ldquo;Students&rdquo; weights each school by its tested count; &ldquo;schools&rdquo; gives every school
-          the same weight. &ldquo;Same schools every year&rdquo; keeps only schools with results in all nine years.</li>
-        <li><b>Within one high school</b> compares the two student groups inside the chosen school. Cells that CDE suppresses
-          (fewer than 11 students) are omitted, so some schools have gaps. Small groups move a lot from year to year.</li>
-        <li><b>Measures.</b> The mean scale score is CDE's published mean. <i>Distance from standard</i> subtracts the grade-11
-          mathematics &ldquo;standard met&rdquo; cut score, 2628. The two <i>percentile</i> measures place the group's mean score in the
-          statewide distribution of all tested students' scores, using CDE's published percentile tables (the 1st, 10th, 20th, &hellip;
-          90th, and 99th percentiles) with straight-line interpolation between the published points; one version uses the
-          distribution of the same year, the other the 2018&ndash;19 distribution throughout. The achievement-level measures
-          are the share of tested students at each of CDE's four levels.</li>
-        <li><b>Years</b> are spring test administrations, labeled by the calendar year (2019 = school year 2018&ndash;19). There was no test
-          in 2020, and 2021 is omitted because testing was optional that year and fewer than half of students took part;
-          the 2021 rows are in the data files.</li>
-      </ul>
-    </div>
-  </details>
-  <footer id="footer"></footer>
+<aside class="side hidden" id="side">
+ <div class="panelbox"><h3>Chart controls</h3>
+  <div class="ctl"><div class="lab">Compare</div><div id="levels"></div></div>
+  <div class="ctl" id="ctlWeight"><div class="lab">Average across</div><div class="seg" id="weight"><button data-v="students" aria-pressed="true">Students</button><button data-v="schools" aria-pressed="false">Schools</button></div></div>
+  <div class="ctl" id="ctlPanel"><div class="lab">Schools included</div><div class="seg" id="panel"><button data-v="all" aria-pressed="true">All reporting</button><button data-v="fixed" aria-pressed="false">Same every year</button></div></div>
+  <div class="ctl hide" id="ctlSchool"><div class="lab">High school</div><input type="text" id="school" list="schoollist" placeholder="Type a school name" /><datalist id="schoollist"></datalist></div>
+  <div class="ctl"><div class="lab">Measure</div><div id="measures"></div></div>
+ </div>
+ <div class="panelbox"><h3>Definitions</h3><div class="note">
+  <p style="margin:0 0 6px"><b>Economically disadvantaged</b> is the California Department of Education's student group (called socioeconomically disadvantaged in the research files): students eligible for free or reduced-price meals, or whose parents did not complete high school, or who are migrant, homeless, or foster youth. The definition changed in 2022&ndash;23, when the number of grade-11 students counted rose by about a tenth.</p>
+  <p style="margin:0 0 6px"><b>LCFF+</b> high schools have more than 75% low-income, English-learner, or foster-youth students (the unduplicated pupil percentage), on their 2016&ndash;17 to 2019&ndash;20 average; the two sets of schools are fixed. Each school enters with its all-students results. &ldquo;Students&rdquo; weights schools by students tested; &ldquo;schools&rdquo; weights them equally. &ldquo;Same every year&rdquo; keeps schools with results in all nine years.</p>
+  <p style="margin:0 0 6px"><b>Within one high school</b> compares the two student groups inside the chosen school. Cells CDE suppresses (fewer than 11 students) are left out.</p>
+  <p style="margin:0 0 6px"><b>Measures.</b> Distance from standard subtracts the grade-11 mathematics standard-met cut score, 2628. The percentile measures place the group's mean score in the statewide distribution of all tested students, using CDE's published percentile tables (1st, 10th, 20th, &hellip; 90th, 99th) with straight-line interpolation between the published points; one uses the same year's distribution, the other the 2019 distribution throughout. Level shares are percentages of tested students.</p>
+  <p style="margin:0"><b>Years</b> are spring administrations (2019 = school year 2018&ndash;19). No test in 2020; 2021 omitted because testing was optional and under half of students took part.</p>
+ </div></div>
+</aside>
+<main class="charts">
+ <figure class="fig" style="margin-left:0;margin-right:0">
+  <div class="fighead"><div><div class="figtitle" id="plotTitle"></div><div class="figsub" id="plotSub"></div></div>
+   <div class="exportwrap"><button class="ctlbtn" id="exportBtn">Export figure &#9662;</button>
+    <div class="exportmenu" id="exportMenu">
+     <div class="hd">Vector (any resolution)</div>
+     <button data-x="svg">SVG<small>opens in Illustrator, Inkscape, Word, PowerPoint; scales without loss</small></button>
+     <button data-x="pdf">PDF<small>opens the print dialog sized to the figure &mdash; choose &ldquo;Save as PDF&rdquo;</small></button>
+     <div class="hd">Raster</div>
+     <button data-x="png2">PNG at 2&times;<small>screen / web</small></button>
+     <button data-x="png4">PNG at 4&times;<small>print</small></button>
+     <button data-x="copy">Copy PNG to clipboard<small>2&times;; paste straight into a document</small></button>
+     <div class="sep"></div>
+     <div class="hd">Data behind this chart</div>
+     <button data-x="csv">CSV of the plotted series<small>one row per year: both groups, the difference, students tested</small></button>
+    </div></div></div>
+  <svg id="chart"></svg>
+  <div class="exportnote" id="exportNote"></div>
+ </figure>
+ <div id="tablewrap"></div>
+</main>
 </div>
-<div class="tooltip" id="tooltip"></div>
+<div class="footer"><div class="l1">Data: California Department of Education, CAASPP Smarter Balanced results by student group (statewide and school-level research files, 2015&ndash;2025), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables.</div><div class="l2" id="footurl"></div></div>
+</div>
+<div id="tip"></div>
 <script src="data.js"></script>
 <script>
 (function(){
   "use strict";
   const REPO='https://github.com/Hart-Hornor-Jones/caaspp-economic-status';
   const D=window.CAASPP_ECON;
-  if(!D){ document.querySelector('.wrap').innerHTML='<p>Could not load <code>data.js</code>. Serve the folder over HTTP or view it on GitHub Pages.</p>'; return; }
+  if(!D){ document.querySelector('.page').innerHTML='<p>Could not load <code>data.js</code>. Serve the folder over HTTP or view it on GitHub Pages.</p>'; return; }
   const $=id=>document.getElementById(id);
   const YEARS=D.years, STD=D.standard;
   // rows: [tested, mean, L4, L3, met, L2, L1]
-  const IX={tested:0,mean:1,L4:2,L3:3,met:4,L2:5,L1:6};
   const MEASURES=[
-    {k:'mean',grp:'Mean scale score',label:'Mean scale score (points)',axis:'Mean scale score',fmt:1,f:r=>r[1]},
-    {k:'dfs',grp:'Mean scale score',label:'Mean scale score, distance from standard (points)',axis:'Points from the standard-met cut (2628)',fmt:1,f:r=>r[1]-STD,zero:true},
-    {k:'pctSame',grp:'Mean scale score',label:"Mean scale score as a percentile of that year's statewide distribution",axis:'Percentile of the same year’s statewide distribution',fmt:1,f:(r,y)=>pctile(r[1],y)},
-    {k:'pct2019',grp:'Mean scale score',label:'Mean scale score as a percentile of the 2019 statewide distribution',axis:'Percentile of the 2019 statewide distribution',fmt:1,f:r=>pctile(r[1],2019)},
-    {k:'L4',grp:'Achievement levels',label:'Standard exceeded (level 4), % of students',axis:'% of tested students, standard exceeded',fmt:1,pct:true,f:r=>r[2]},
-    {k:'met',grp:'Achievement levels',label:'Standard met or exceeded (levels 3–4), % of students',axis:'% of tested students, standard met or exceeded',fmt:1,pct:true,f:r=>r[4]},
-    {k:'L3',grp:'Achievement levels',label:'Standard met, not exceeded (level 3), % of students',axis:'% of tested students, standard met (level 3 only)',fmt:1,pct:true,f:r=>r[3]},
-    {k:'L2',grp:'Achievement levels',label:'Standard nearly met (level 2), % of students',axis:'% of tested students, standard nearly met',fmt:1,pct:true,f:r=>r[5]},
-    {k:'L1',grp:'Achievement levels',label:'Standard not met (level 1), % of students',axis:'% of tested students, standard not met',fmt:1,pct:true,f:r=>r[6]},
+    {k:'mean',grp:'Mean scale score',label:'Points',axis:'Mean scale score',fmt:1,f:r=>r[1]},
+    {k:'dfs',grp:'Mean scale score',label:'Distance from standard (points from 2628)',axis:'Points from the standard-met cut score',fmt:1,f:r=>r[1]-STD,zero:true},
+    {k:'pctSame',grp:'Mean scale score',label:"Percentile of the same year's statewide distribution",axis:'Percentile, same year’s statewide distribution',fmt:1,f:(r,y)=>pctile(r[1],y)},
+    {k:'pct2019',grp:'Mean scale score',label:'Percentile of the 2019 statewide distribution',axis:'Percentile, 2019 statewide distribution',fmt:1,f:r=>pctile(r[1],2019)},
+    {k:'L4',grp:'Achievement levels, % of students',label:'Standard exceeded (level 4)',axis:'% of tested students, standard exceeded',fmt:1,pct:true,f:r=>r[2]},
+    {k:'met',grp:'Achievement levels, % of students',label:'Standard met or exceeded (levels 3–4)',axis:'% of tested students, standard met or exceeded',fmt:1,pct:true,f:r=>r[4]},
+    {k:'L3',grp:'Achievement levels, % of students',label:'Standard met, not exceeded (level 3)',axis:'% of tested students, level 3 only',fmt:1,pct:true,f:r=>r[3]},
+    {k:'L2',grp:'Achievement levels, % of students',label:'Standard nearly met (level 2)',axis:'% of tested students, standard nearly met',fmt:1,pct:true,f:r=>r[5]},
+    {k:'L1',grp:'Achievement levels, % of students',label:'Standard not met (level 1)',axis:'% of tested students, standard not met',fmt:1,pct:true,f:r=>r[6]},
   ];
   const MBy=Object.fromEntries(MEASURES.map(m=>[m.k,m]));
+  const LEVELS=[['state','All California students'],['schools','High schools: LCFF+ vs. other'],['school','Within one high school']];
   function pctile(score,year){ const t=D.pct[String(year)]; if(!t||score==null) return null; const p=t.p,s=t.s;
     if(score<=s[0]) return p[0]; if(score>=s[s.length-1]) return p[p.length-1];
-    for(let i=1;i<s.length;i++){ if(score<=s[i]){ return p[i-1]+(p[i]-p[i-1])*(score-s[i-1])/(s[i]-s[i-1]); } } return null; }
+    for(let i=1;i<s.length;i++){ if(score<=s[i]) return p[i-1]+(p[i]-p[i-1])*(score-s[i-1])/(s[i]-s[i-1]); } return null; }
 
   // ---- state & controls -----------------------------------------------------------------------
   const state={level:'state',measure:'mean',weight:'students',panel:'all',school:null};
   const schoolById=Object.fromEntries(D.schools.map(s=>[s.id,s]));
   const labelOf=s=>`${s.n} — ${s.d} (${s.c})`;
   const idByLabel=Object.fromEntries(D.schools.map(s=>[labelOf(s),s.id]));
-  { const ms=$('measure'); let g=null,og=null;
-    for(const m of MEASURES){ if(m.grp!==g){ g=m.grp; og=document.createElement('optgroup'); og.label=g; ms.appendChild(og); }
-      const o=document.createElement('option'); o.value=m.k; o.textContent=m.label; og.appendChild(o); }
-    const dl=$('schoollist'); const frag=document.createDocumentFragment();
+  function radios(host,name,items,cur,onpick){ host.innerHTML=''; let g=null;
+    for(const it of items){ if(it.grp&&it.grp!==g){ g=it.grp; const d=document.createElement('div'); d.className='sublab'; d.textContent=g; host.appendChild(d); }
+      const l=document.createElement('label'); l.className='opt'; const i=document.createElement('input'); i.type='radio'; i.name=name; i.value=it.k; i.checked=it.k===cur;
+      i.onchange=()=>onpick(it.k); l.appendChild(i); l.appendChild(document.createTextNode(it.label)); host.appendChild(l); } }
+  radios($('levels'),'level',LEVELS.map(([k,label])=>({k,label})),state.level,k=>{ state.level=k; render(); });
+  radios($('measures'),'measure',MEASURES,state.measure,k=>{ state.measure=k; render(); });
+  for(const id of ['weight','panel']) $(id).querySelectorAll('button').forEach(b=>b.onclick=()=>{ state[id]=b.dataset.v; $(id).querySelectorAll('button').forEach(x=>x.setAttribute('aria-pressed',x===b)); render(); });
+  { const dl=$('schoollist'); const frag=document.createDocumentFragment();
     for(const s of D.schools){ const o=document.createElement('option'); o.value=labelOf(s); frag.appendChild(o); } dl.appendChild(frag);
     const def=D.schools.find(s=>s.n==='Mission High'&&s.c==='San Francisco')||D.schools[0]; state.school=def.id; $('school').value=labelOf(def); }
-  $('dataLink').href=REPO+'/tree/main/data';
-  $('level').onchange=e=>{ state.level=e.target.value; render(); };
-  $('measure').onchange=e=>{ state.measure=e.target.value; render(); };
-  $('weight').onchange=e=>{ state.weight=e.target.value; render(); };
-  $('panel').onchange=e=>{ state.panel=e.target.value; render(); };
   $('school').onchange=e=>{ const id=idByLabel[e.target.value.trim()]; if(id){ state.school=id; render(); } else e.target.value=labelOf(schoolById[state.school]); };
-  $('school').onfocus=e=>{ e.target.select(); };
+  $('school').onfocus=e=>e.target.select();
+  $('ctltoggle').onclick=()=>{ const h=$('side').classList.toggle('hidden'); $('ctltoggle').setAttribute('aria-pressed',!h); $('ctltoggle').innerHTML='Chart controls '+(h?'&#9656;':'&#9662;'); setTimeout(render,0); };
+  $('dataLink').href=REPO+'/tree/main/data';
 
   // ---- series ---------------------------------------------------------------------------------
   function series(){
@@ -210,84 +180,81 @@
   // ---- drawing --------------------------------------------------------------------------------
   const NS='http://www.w3.org/2000/svg';
   function mk(tag,attrs,text){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!=null) e.textContent=text; return e; }
-  const FONT='-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif';
-  const COL={a:'#d7642a',b:'#2e74b5'};
-  function niceTicks(lo,hi,n){ const span=hi-lo||1, raw=span/n, mag=Math.pow(10,Math.floor(Math.log10(raw))); let step=mag;
-    for(const f of [1,2,2.5,5,10]){ if(raw/mag<=f){ step=f*mag; break; } } const t=[]; for(let v=Math.ceil(lo/step)*step; v<=hi+1e-9; v+=step) t.push(+v.toFixed(6)); return {t,step}; }
-  const fmtV=(v,m)=>v==null?'—':(m.k==='dfs'&&v>0?'+':'')+v.toFixed(m.fmt);
-  let cur=null, hoverYear=null;
+  const FONT="'Helvetica Neue',Helvetica,Arial,sans-serif";
+  const COL={a:'#FB0207',b:'#0000FF'};
+  function ticks(a,b,n){ const r=(b-a)||1, st=Math.pow(10,Math.floor(Math.log10(r/n))); const c=[1,2,2.5,5,10].map(k=>k*st).find(k=>r/k<=n+1); const o=[]; for(let v=Math.ceil(a/c-1e-9)*c; v<=b+1e-9; v+=c) o.push(+v.toFixed(6)); return o; }
+  const minus=s=>String(s).replace('-','−');
+  const fmtV=(v,m)=>v==null?'—':minus((m.k==='dfs'&&v>0?'+':'')+v.toFixed(m.fmt));
+  let cur=null;
   function draw(){
     const S=series(); cur=S; const {m,pts}=S;
     const svg=$('chart'); while(svg.firstChild) svg.removeChild(svg.firstChild);
-    const W=Math.max(320,svg.clientWidth||svg.parentNode.clientWidth-16), wide=W>=640, H=Math.round(Math.min(460,Math.max(300,W*0.48)));
-    const ml=58, mr=wide?200:22, mt=16, mb=40, pw=W-ml-mr, ph=H-mt-mb;
-    svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('font-family',FONT);
+    const W=Math.max(320,svg.clientWidth||svg.parentNode.clientWidth), wide=W>=600, H=Math.round(Math.min(440,Math.max(300,W*0.5)));
+    const LM=62, RM=wide?205:20, TM=14, BM=44, base=H-BM, pw=W-LM-RM, ph=base-TM;
+    svg.setAttribute('viewBox',`0 0 ${W} ${H}`); svg.setAttribute('width',W); svg.setAttribute('height',H); svg.setAttribute('font-family',FONT); svg.setAttribute('font-weight','700');
+    const T=(x,y,txt,attrs)=>svg.appendChild(mk('text',Object.assign({x,y,'font-family':FONT,'font-weight':700,fill:'#000'},attrs),txt));
     const vals=pts.flatMap(p=>[p.a,p.b]).filter(v=>v!=null);
-    if(!vals.length){ svg.appendChild(mk('text',{x:W/2,y:H/2,'text-anchor':'middle','font-size':13,fill:'#5c6470'},'No published results for this selection.')); $('legend').innerHTML=''; drawTable(S); return; }
+    if(!vals.length){ T(W/2,H/2,'No published results for this selection.',{'text-anchor':'middle','font-size':13}); drawTable(S); return; }
     let lo=Math.min(...vals), hi=Math.max(...vals);
-    if(m.pct){ lo=0; hi=Math.max(hi,5); } else if(m.zero&&lo>0) lo=0; else if(m.zero&&hi<0) hi=0;
-    let pad=(hi-lo)*0.12||1; if(m.pct){ hi+=pad; } else { lo-=pad; hi+=pad; }
-    const yt=niceTicks(lo,hi,6); if(!m.pct){ lo=Math.min(lo,yt.t[0]); }
-    const x=y=>ml+(y-2015)/(2025-2015)*pw, yy=v=>mt+ph-(v-lo)/(hi-lo)*ph;
-    // grid + axes
-    for(const t of yt.t){ if(t<lo||t>hi) continue; svg.appendChild(mk('line',{x1:ml,x2:ml+pw,y1:yy(t),y2:yy(t),stroke:'#eef1f5'}));
-      svg.appendChild(mk('text',{x:ml-8,y:yy(t)+4,'text-anchor':'end','font-size':11,fill:'#5c6470'},m.k==='dfs'&&t>0?'+'+t:String(t))); }
-    if(m.zero&&lo<0&&hi>0) svg.appendChild(mk('line',{x1:ml,x2:ml+pw,y1:yy(0),y2:yy(0),stroke:'#999','stroke-dasharray':'3 3'}));
-    svg.appendChild(mk('line',{x1:ml,x2:ml+pw,y1:mt+ph,y2:mt+ph,stroke:'#cdd4de'}));
-    for(let y=2015;y<=2025;y++){ const on=YEARS.includes(y); svg.appendChild(mk('line',{x1:x(y),x2:x(y),y1:mt+ph,y2:mt+ph+(on?5:3),stroke:'#cdd4de'}));
-      if(W>=560||y%2===1) svg.appendChild(mk('text',{x:x(y),y:mt+ph+18,'text-anchor':'middle','font-size':11,fill:on?'#5c6470':'#b0b6c0'},String(y))); }
-    svg.appendChild(mk('text',{x:(x(2020)+x(2021))/2,y:mt+ph+32,'text-anchor':'middle','font-size':9.5,fill:'#8a919c'},'no test / optional'));
-    svg.appendChild(mk('text',{transform:`rotate(-90)`,x:-(mt+ph/2),y:14,'text-anchor':'middle','font-size':11.5,fill:'#5c6470'},m.axis));
-    // lines: one polyline per contiguous run of years (broken at 2020-21 and at any missing cell)
-    const runs=(key)=>{ const out=[]; let r=[]; for(let i=0;i<pts.length;i++){ const p=pts[i]; const v=p[key];
+    if(m.pct){ lo=0; } else if(m.zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); }
+    const pad=(hi-lo)*0.12||1; hi+=pad; if(!m.pct) lo-=pad;
+    const tk=ticks(lo,hi,5); if(!m.pct){ lo=Math.min(lo,tk[0]); }
+    const x=y=>LM+(y-2015)/(2025-2015)*pw, yy=v=>base-(v-lo)/(hi-lo)*ph;
+    // axes (left and bottom only), outward ticks, no gridlines
+    svg.appendChild(mk('line',{x1:LM,x2:LM,y1:TM,y2:base,stroke:'#000','stroke-width':2.6}));
+    svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:base,y2:base,stroke:'#000','stroke-width':2.6}));
+    tk.forEach(t=>{ if(t<lo-1e-9||t>hi+1e-9) return; svg.appendChild(mk('line',{x1:LM-7,x2:LM,y1:yy(t),y2:yy(t),stroke:'#000','stroke-width':2}));
+      T(LM-10,yy(t)+4,minus((m.k==='dfs'&&t>0?'+':'')+(Number.isInteger(t)?String(t):t.toFixed(1))),{'text-anchor':'end','font-size':11}); });
+    if(m.zero&&lo<0&&hi>0) svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:yy(0),y2:yy(0),stroke:'#000','stroke-width':1.5,'stroke-dasharray':'4 3'}));
+    for(let y=2015;y<=2025;y++){ const on=YEARS.includes(y); svg.appendChild(mk('line',{x1:x(y),x2:x(y),y1:base,y2:base+(on?7:4),stroke:'#000','stroke-width':on?2:1.2}));
+      if(W>=560||y%2===1) T(x(y),base+20,String(y),{'text-anchor':'middle','font-size':10.5,fill:on?'#000':'#999'}); }
+    T((x(2020)+x(2021))/2,base+33,'no test / optional',{'text-anchor':'middle','font-size':9.5,fill:'#555'});
+    T(0,0,m.axis,{transform:`rotate(-90) translate(${-(TM+ph/2)},14)`,'text-anchor':'middle','font-size':11.5});
+    // lines: solid within each contiguous run, dashed across the 2019-2022 gap; dots outlined in black
+    const runs=key=>{ const out=[]; let r=[]; for(let i=0;i<pts.length;i++){ const p=pts[i]; const v=p[key];
       if(v==null||(i>0&&p.y-pts[i-1].y>1)){ if(r.length) out.push(r); r=[]; } if(v!=null) r.push(p); } if(r.length) out.push(r); return out; };
-    for(const [key,col] of [['b',COL.b],['a',COL.a]]){
-      for(const r of runs(key)){ if(r.length>1) svg.appendChild(mk('polyline',{points:r.map(p=>`${x(p.y)},${yy(p[key])}`).join(' '),fill:'none',stroke:col,'stroke-width':2.2,'stroke-linejoin':'round'})); }
-      for(const p of pts){ if(p[key]!=null) svg.appendChild(mk('circle',{cx:x(p.y),cy:yy(p[key]),r:3.6,fill:col,stroke:'#fff','stroke-width':1.2})); } }
-    // end labels (wide) or legend (narrow)
+    for(const [key,col] of [['b',COL.b],['a',COL.a]]){ const rs=runs(key);
+      rs.forEach((r,i)=>{ if(r.length>1) svg.appendChild(mk('path',{d:'M'+r.map(p=>`${x(p.y)},${yy(p[key])}`).join('L'),fill:'none',stroke:col,'stroke-width':2.6,'stroke-linejoin':'round'}));
+        if(i>0){ const q=rs[i-1][rs[i-1].length-1], p=r[0]; svg.appendChild(mk('path',{d:`M${x(q.y)},${yy(q[key])}L${x(p.y)},${yy(p[key])}`,fill:'none',stroke:col,'stroke-width':1.6,'stroke-dasharray':'3 4'})); } });
+      for(const p of pts){ if(p[key]!=null) svg.appendChild(mk('circle',{cx:x(p.y),cy:yy(p[key]),r:4.2,fill:col,stroke:'#000','stroke-width':1.6})); } }
+    // end labels (wide) or an unboxed legend (narrow)
     if(wide){ const last=key=>[...pts].reverse().find(p=>p[key]!=null); const la=last('a'), lb=last('b');
       let ya=la?yy(la.a):null, yb=lb?yy(lb.b):null; if(ya!=null&&yb!=null&&Math.abs(ya-yb)<14){ const mid=(ya+yb)/2; if(ya<yb){ya=mid-7;yb=mid+7;} else {ya=mid+7;yb=mid-7;} }
-      const lab=(p,y0,txt,col)=>{ if(!p) return; svg.appendChild(mk('line',{x1:x(p.y)+5,x2:ml+pw+8,y1:y0,y2:y0,stroke:col,'stroke-width':1,opacity:.5}));
-        svg.appendChild(mk('text',{x:ml+pw+12,y:y0+4,'font-size':11.5,fill:'#1a1a1a'},txt)); };
-      lab(la,ya,S.labA,COL.a); lab(lb,yb,S.labB,COL.b); $('legend').innerHTML=''; }
-    else { $('legend').innerHTML=`<span><span class="sw" style="background:${COL.a}"></span>${S.labA}</span><span><span class="sw" style="background:${COL.b}"></span>${S.labB}</span>`; }
+      const lab=(p,y0,txt)=>{ if(!p) return; svg.appendChild(mk('line',{x1:x(p.y)+6,x2:W-RM+13,y1:y0,y2:y0,stroke:'#000','stroke-width':1})); T(W-RM+16,y0+4,txt,{'font-size':10.5}); };
+      lab(la,ya,S.labA); lab(lb,yb,S.labB); }
+    else { let lx=LM, ly=TM-8; for(const [lab,col] of [[S.labA,COL.a],[S.labB,COL.b]]){ svg.appendChild(mk('rect',{x:lx,y:ly,width:12,height:12,fill:col,stroke:'#000','stroke-width':1.2})); T(lx+16,ly+10,lab,{'font-size':10.5}); lx+=16+lab.length*6.4+16; if(lx>W-RM-120){ lx=LM; ly+=16; } } }
     // hover
-    const guide=mk('line',{x1:0,x2:0,y1:mt,y2:mt+ph,stroke:'#999','stroke-dasharray':'2 3',opacity:0,'data-hover':1}); svg.appendChild(guide);
-    const hit=mk('rect',{x:ml,y:mt,width:pw,height:ph,fill:'transparent','data-hover':1}); svg.appendChild(hit);
-    const tip=$('tooltip');
-    hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect(), sx=(ev.clientX-rect.left)*W/rect.width; const yr=2015+(sx-ml)/pw*10;
+    const guide=mk('line',{x1:0,x2:0,y1:TM,y2:base,stroke:'#000','stroke-width':1,'stroke-dasharray':'2 3',opacity:0,'data-hover':1}); svg.appendChild(guide);
+    const hit=mk('rect',{x:LM,y:TM,width:pw,height:ph,fill:'transparent','data-hover':1}); svg.appendChild(hit);
+    const tip=$('tip');
+    hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect(), sx=(ev.clientX-rect.left)*W/rect.width; const yr=2015+(sx-LM)/pw*10;
       let best=null; for(const p of pts){ if(p.a==null&&p.b==null) continue; if(!best||Math.abs(p.y-yr)<Math.abs(best.y-yr)) best=p; } if(!best) return;
-      guide.setAttribute('x1',x(best.y)); guide.setAttribute('x2',x(best.y)); guide.setAttribute('opacity',1); hoverYear=best.y; hlRow(best.y);
-      const gap=(best.a!=null&&best.b!=null)?best.b-best.a:null;
-      tip.innerHTML=`<b>${best.y}</b><br>${S.labA}: <b>${fmtV(best.a,m)}</b>${best.na!=null?` <span class="tl">(${best.na.toLocaleString()} tested${best.sa!=null?', '+best.sa.toLocaleString()+' schools':''})</span>`:''}`+
-        `<br>${S.labB}: <b>${fmtV(best.b,m)}</b>${best.nb!=null?` <span class="tl">(${best.nb.toLocaleString()} tested${best.sb!=null?', '+best.sb.toLocaleString()+' schools':''})</span>`:''}`+
-        (gap!=null?`<br><span class="tl">difference</span> <b>${(gap>0?'+':'')+gap.toFixed(m.fmt)}</b>`:'');
-      tip.style.opacity=1; const tw=tip.offsetWidth||220; tip.style.left=Math.min(ev.clientX+14,window.innerWidth-tw-8)+'px'; tip.style.top=(ev.clientY+14)+'px'; };
-    hit.onmouseleave=()=>{ guide.setAttribute('opacity',0); tip.style.opacity=0; hoverYear=null; hlRow(null); };
+      guide.setAttribute('x1',x(best.y)); guide.setAttribute('x2',x(best.y)); guide.setAttribute('opacity',1); hlRow(best.y);
+      const gap=(best.a!=null&&best.b!=null)?best.b-best.a:null; const n=(v,s)=>v==null?'':` (${v.toLocaleString()} tested${s!=null?', '+s.toLocaleString()+' schools':''})`;
+      tip.innerHTML=`<div class="h">${best.y}</div>${S.labA}: ${fmtV(best.a,m)}${n(best.na,best.sa)}<br>${S.labB}: ${fmtV(best.b,m)}${n(best.nb,best.sb)}`+(gap!=null?`<br>Difference: ${minus((gap>0?'+':'')+gap.toFixed(m.fmt))}`:'');
+      tip.style.display='block'; const tw=tip.offsetWidth||240; tip.style.left=Math.min(ev.clientX+14,window.innerWidth-tw-8)+'px'; tip.style.top=(ev.clientY+14)+'px'; };
+    hit.onmouseleave=()=>{ guide.setAttribute('opacity',0); tip.style.display='none'; hlRow(null); };
     drawTable(S); }
   function hlRow(y){ document.querySelectorAll('table.nums tr[data-y]').forEach(tr=>tr.classList.toggle('hl',+tr.dataset.y===y)); }
   function drawTable(S){ const {m,pts}=S; const sch=state.level==='schools';
-    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>Tested${sch?' (schools)':''}, ${S.labA.toLowerCase()}</th><th>Tested${sch?' (schools)':''}, ${S.labB.toLowerCase()}</th></tr></thead><tbody>`;
+    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>Tested${sch?' (schools)':''}<br>${S.labA.toLowerCase()}</th><th>Tested${sch?' (schools)':''}<br>${S.labB.toLowerCase()}</th></tr></thead><tbody>`;
     for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?p.b-p.a:null; const n=(v,s)=>v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
-      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':(gap>0?'+':'')+gap.toFixed(m.fmt)}</td><td>${n(p.na,p.sa)}</td><td>${n(p.nb,p.sb)}</td></tr>`; }
+      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':minus((gap>0?'+':'')+gap.toFixed(m.fmt))}</td><td>${n(p.na,p.sa)}</td><td>${n(p.nb,p.sb)}</td></tr>`; }
     h+=`</tbody></table><p class="tblnote">Difference = ${S.labB.toLowerCase()} minus ${S.labA.toLowerCase()}. — = not published${state.level==='school'?' (fewer than 11 students)':''}.</p>`; $('tablewrap').innerHTML=h; }
   function render(){ const lv=state.level; $('ctlWeight').classList.toggle('hide',lv!=='schools'); $('ctlPanel').classList.toggle('hide',lv!=='schools'); $('ctlSchool').classList.toggle('hide',lv!=='school');
-    draw(); $('plotTitle').textContent=cur.title; $('plotSub').textContent=cur.sub+' · '+cur.m.label; }
+    draw(); $('plotTitle').textContent=cur.title; $('plotSub').textContent=cur.sub+' · '+cur.m.grp.replace(', % of students','')+': '+cur.m.label.toLowerCase(); }
 
   // ---- export ---------------------------------------------------------------------------------
   function wrapText(str,maxChars){ const words=String(str).split(/\s+/), lines=[]; let c=''; for(const w of words){ if(c&&(c+' '+w).length>maxChars){ lines.push(c); c=w; } else c=c?c+' '+w:w; } if(c) lines.push(c); return lines; }
   function buildFigure(){ const src=$('chart'); const cw=+src.getAttribute('width'), ch=+src.getAttribute('height'); if(!cw||!cur) return null;
     const PAD=18, W=cw+2*PAD, inner=W-2*PAD, root=mk('svg',{xmlns:NS,version:'1.1'}); root.appendChild(mk('rect',{x:0,y:0,width:'100%',height:'100%',fill:'#fff'}));
-    let y=PAD; const add=(str,fs,wt,color,maxChars)=>{ const t=mk('text',{x:PAD,y:0,'font-family':FONT,'font-size':fs,'font-weight':wt,fill:color});
+    let y=PAD; const add=(str,fs,color,maxChars)=>{ const t=mk('text',{x:PAD,y:0,'font-family':FONT,'font-size':fs,'font-weight':700,fill:color});
       wrapText(str,maxChars).forEach(ln=>{ t.appendChild(mk('tspan',{x:PAD,y:y+fs*0.85},ln)); y+=fs*1.35; }); root.appendChild(t); };
-    add($('plotTitle').textContent,15,'600','#1a1a1a',Math.floor(inner/8.6)); add($('plotSub').textContent,11.5,'400','#5c6470',Math.floor(inner/6.6)); y+=4;
+    add($('plotTitle').textContent,15,'#000',Math.floor(inner/8.6)); add($('plotSub').textContent,11.5,'#000',Math.floor(inner/6.6)); y+=6;
     const clone=src.cloneNode(true); clone.querySelectorAll('[data-hover]').forEach(e=>e.remove());
-    const g=mk('g',{transform:`translate(${PAD},${y})`,'font-family':FONT}); while(clone.firstChild) g.appendChild(clone.firstChild); root.appendChild(g); y+=ch+6;
-    if(!(cw>=640)){ let lx=PAD; for(const [lab,col] of [[cur.labA,COL.a],[cur.labB,COL.b]]){ root.appendChild(mk('line',{x1:lx,x2:lx+18,y1:y+6,y2:y+6,stroke:col,'stroke-width':3}));
-        root.appendChild(mk('text',{x:lx+24,y:y+10,'font-family':FONT,'font-size':11,fill:'#1a1a1a'},lab)); lx+=24+lab.length*6.3+18; } y+=20; }
-    y+=4; root.appendChild(mk('line',{x1:PAD,x2:W-PAD,y1:y,y2:y,stroke:'#e2e6ec'})); y+=6;
+    const g=mk('g',{transform:`translate(${PAD},${y})`,'font-family':FONT,'font-weight':700}); while(clone.firstChild) g.appendChild(clone.firstChild); root.appendChild(g); y+=ch+10;
     const page=(location.protocol.startsWith('http')?location.host+location.pathname:'caaspp-economic-status').replace(/index\.html$/,'');
-    add(`Source: California Department of Education, CAASPP research files (statewide and school results by student group), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables. Chart from ${page}, data build ${D.generated}, exported ${new Date().toISOString().slice(0,10)}.`,10,'400','#7a828e',Math.floor(inner/6.2));
+    add(`Data: California Department of Education, CAASPP results by student group (statewide and school-level research files), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables. Chart from ${page}, data build ${D.generated}, exported ${new Date().toISOString().slice(0,10)}.`,10,'#000',Math.floor(inner/6.2));
     y+=PAD-6; root.setAttribute('width',W); root.setAttribute('height',Math.round(y)); root.setAttribute('viewBox',`0 0 ${W} ${Math.round(y)}`); return {svg:root,w:W,h:Math.round(y)}; }
   const sanitize=s=>String(s||'').replace(/[^\w.\-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60);
   function figName(ext){ const who= state.level==='state'?'statewide' : state.level==='schools'?`lcff_${state.weight}_${state.panel}` : sanitize(schoolById[state.school].n); return `caaspp-econ_${who}_${state.measure}.${ext}`; }
@@ -296,32 +263,31 @@
   function rasterize(fig,scale){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=Math.round(fig.w*scale); c.height=Math.round(fig.h*scale);
       const ctx=c.getContext('2d'); ctx.fillStyle='#fff'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0,c.width,c.height); c.toBlob(b=>b?res(b):rej(new Error('canvas export failed')),'image/png'); };
     img.onerror=()=>rej(new Error('could not rasterize SVG')); img.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(serialize(fig.svg)); }); }
-  let noteT; function note(msg,ms){ const n=$('exportNote'); n.textContent=msg; n.classList.add('show'); clearTimeout(noteT); if(ms) noteT=setTimeout(()=>n.classList.remove('show'),ms); }
+  let noteT; function note(msg,ms){ const n=$('exportNote'); n.textContent=msg; clearTimeout(noteT); if(ms) noteT=setTimeout(()=>{ n.textContent=''; },ms); }
   function exportPdf(fig,name){ const w=window.open('','_blank'); if(!w){ note('Pop-up blocked — allow pop-ups for this site, or export SVG instead.',5000); return; }
     w.document.write(`<!DOCTYPE html><html><head><meta charset="utf-8"><title>${name}</title><style>@page{size:${fig.w}px ${fig.h}px;margin:0}html,body{margin:0;padding:0;background:#fff}svg{display:block}`+
-      `.hint{font:13px/1.4 ${FONT};color:#5c6470;padding:10px 14px;border-bottom:1px solid #e2e6ec;background:#fbfcfe}@media print{.hint{display:none}}</style></head><body>`+
-      `<div class="hint">In the print dialog choose <b>Save as PDF</b>, keep margins at <b>None</b> and scale at <b>100%</b>; the page size matches the figure. Close this tab afterwards.</div>`+
+      `.hint{font:700 13px/1.4 ${FONT};color:#000;padding:10px 14px;border-bottom:2.5px solid #000}@media print{.hint{display:none}}</style></head><body>`+
+      `<div class="hint">In the print dialog choose Save as PDF, keep margins at None and scale at 100%; the page size matches the figure. Close this tab afterwards.</div>`+
       serialize(fig.svg).replace(/^<\?xml[^>]*>\n?/,'')+'</body></html>'); w.document.close(); w.focus(); setTimeout(()=>w.print(),400); }
   function csvOfChart(){ if(!cur) return null; const {m,pts}=cur; const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"'; const sch=state.level==='schools';
-    const cols=['year',`group_a`,`value_a:${m.k}`,'tested_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,'tested_b',...(sch?['schools_b']:[]),'difference_b_minus_a'];
+    const cols=['year','group_a',`value_a:${m.k}`,'tested_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,'tested_b',...(sch?['schools_b']:[]),'difference_b_minus_a'];
     const rows=[cols.join(',')]; for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?(p.b-p.a).toFixed(3):'';
       rows.push([p.y,q(cur.labA),p.a==null?'':+p.a.toFixed(3),p.na??'',...(sch?[p.sa??'']:[]),q(cur.labB),p.b==null?'':+p.b.toFixed(3),p.nb??'',...(sch?[p.sb??'']:[]),gap].join(',')); }
-    return `# ${cur.title}\n# ${cur.sub}\n# measure: ${m.label}; data build ${D.generated}; exported ${new Date().toISOString().slice(0,10)}\n`+rows.join('\n')+'\n'; }
+    return `# ${cur.title}\n# ${cur.sub}\n# measure: ${m.grp} - ${m.label}; data build ${D.generated}; exported ${new Date().toISOString().slice(0,10)}\n`+rows.join('\n')+'\n'; }
   async function doExport(kind){
     if(kind==='csv'){ const c=csvOfChart(); if(!c){ note('Nothing plotted to export.',3000); return; } download(new Blob([c],{type:'text/csv;charset=utf-8'}),figName('csv')); note('CSV downloaded.',2500); return; }
     const fig=buildFigure(); if(!fig){ note('Nothing plotted to export.',3000); return; }
     try{ if(kind==='svg'){ download(new Blob([serialize(fig.svg)],{type:'image/svg+xml;charset=utf-8'}),figName('svg')); note('SVG downloaded (vector).',2500); }
       else if(kind==='png2'||kind==='png4'){ const sc=kind==='png4'?4:2; note(`Rendering PNG at ${sc}×…`); const b=await rasterize(fig,sc); download(b,figName('png').replace(/\.png$/,`_${sc}x.png`)); note(`PNG downloaded: ${Math.round(fig.w*sc)}×${Math.round(fig.h*sc)} px.`,3500); }
       else if(kind==='copy'){ note('Rendering PNG…'); const b=await rasterize(fig,2); if(navigator.clipboard&&window.ClipboardItem){ await navigator.clipboard.write([new ClipboardItem({'image/png':b})]); note('PNG copied to the clipboard (2×).',3000); } else { download(b,figName('png').replace(/\.png$/,'_2x.png')); note('Clipboard images not supported here — downloaded the PNG instead.',4000); } }
-      else if(kind==='pdf'){ exportPdf(fig,figName('pdf')); note('Print dialog opened — choose “Save as PDF”.',4000); }
+      else if(kind==='pdf'){ exportPdf(fig,figName('pdf')); note('Print dialog opened — choose Save as PDF.',4000); }
     } catch(e){ console.error(e); note('Export failed: '+(e&&e.message||e),5000); } }
   $('exportBtn').onclick=e=>{ e.stopPropagation(); $('exportMenu').classList.toggle('open'); };
   document.addEventListener('click',()=>$('exportMenu').classList.remove('open'));
   $('exportMenu').querySelectorAll('button').forEach(b=>b.onclick=e=>{ e.stopPropagation(); $('exportMenu').classList.remove('open'); doExport(b.dataset.x); });
   window.CAASPP_EXPORT={buildFigure,serialize,csvOfChart,series,pctile};
 
-  $('footer').innerHTML=`Data: California Department of Education — CAASPP research files (statewide and school-level results by student group, 2015–2025), CALPADS unduplicated pupil counts (2016–17 onward), and CDE scale-score percentile tables. Data build ${D.generated}. `+
-    `Source code and data files: <a href="${REPO}">${REPO.replace('https://','')}</a>.`;
+  $('footurl').innerHTML=`Data build ${D.generated} · <a href="${REPO}">${REPO.replace('https://','')}</a> · data files in <a href="${REPO}/tree/main/data">data/</a>`;
   let rt; window.addEventListener('resize',()=>{ clearTimeout(rt); rt=setTimeout(render,120); });
   render();
 })();
