@@ -9,8 +9,8 @@
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:#fff;color:#000;font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700}
 .page{max-width:1180px;margin:0 auto;padding:22px 20px 40px}
-.bigtitle{text-align:center;font-size:23px;line-height:1.35;margin:2px 0 4px}
-.subtitle{text-align:center;font-size:14px;margin:0 auto 14px;max-width:900px}
+.bigtitle{text-align:left;font-size:23px;line-height:1.3;margin:2px 0 6px}
+.subtitle{text-align:left;font-size:13.5px;line-height:1.45;margin:0 0 16px;max-width:820px;font-weight:400}
 a{color:#000}
 .topbar{display:flex;align-items:center;gap:14px;margin:0 0 14px;flex-wrap:wrap}
 .ctlbtn{font:inherit;font-size:12px;letter-spacing:.04em;text-transform:uppercase;border:2.5px solid #000;background:#fff;color:#000;padding:5px 10px;cursor:pointer}
@@ -31,12 +31,13 @@ label.opt input{accent-color:#000;margin:2px 0 0;cursor:pointer;flex:0 0 auto}
 .seg button+button{border-left:2.5px solid #000}
 .seg button[aria-pressed=true]{background:#000;color:#fff}
 input[type=text]{font:inherit;font-size:12.5px;border:2px solid #000;background:#fff;color:#000;padding:3px 5px;width:100%}
-.note{font-size:11px;line-height:1.45;margin-top:8px}
+.note{font-size:11px;line-height:1.45;margin-top:8px;font-weight:400}
 .charts{flex:1;min-width:0}
-.fig{margin:0 0 24px}
+.fig{margin:0 0 6px}
 .figtitle{font-size:17px;line-height:1.3;margin:0 0 2px}
 .figsub{font-size:12.5px;margin:0 0 8px;font-weight:400}
-.fighead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;flex-wrap:wrap}
+.fighead{display:flex;justify-content:space-between;align-items:flex-start;gap:14px}
+.fighead>div:first-child{flex:1 1 0;min-width:0}
 svg{display:block;width:100%;height:auto;overflow:visible}
 svg text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700;fill:#000}
 .exportwrap{position:relative;flex:0 0 auto}
@@ -47,9 +48,10 @@ svg text{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;font-weight:700
 .exportmenu button small{display:block;font-size:10.5px;font-weight:400}
 .exportmenu .hd{font-size:10px;letter-spacing:.05em;text-transform:uppercase;padding:5px 12px 2px;color:#555}
 .exportmenu .sep{border-top:2px solid #000;margin:4px 0}
-.exportnote{font-size:11.5px;margin:6px 0 0;min-height:16px}
-table.nums{border-collapse:collapse;font-size:12px;margin:10px 0 0;border-top:2.5px solid #000;border-bottom:2.5px solid #000}
-table.nums th,table.nums td{padding:4px 14px 4px 0;text-align:right}
+.exportnote{font-size:11.5px;margin:0}.exportnote:not(:empty){margin:6px 0 0}
+table.nums{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0 0;border-top:2.5px solid #000;border-bottom:2.5px solid #000}
+table.nums th,table.nums td{padding:4px 0 4px 14px;text-align:right}
+table.nums th:first-child,table.nums td:first-child{padding-left:0}
 table.nums td{white-space:nowrap}
 table.nums th{font-size:11px;border-bottom:2px solid #000;vertical-align:bottom;max-width:150px}
 #tablewrap{overflow-x:auto}
@@ -58,8 +60,8 @@ table.nums tr.hl td{background:#000;color:#fff}
 .tblnote{font-size:11px;font-weight:400;margin:6px 0 0}
 #tip{position:fixed;display:none;background:#fff;border:2.5px solid #000;padding:9px 12px;font-size:12px;line-height:1.5;pointer-events:none;z-index:50;max-width:320px}
 #tip .h{font-size:12.5px;margin-bottom:3px}
-.footer{text-align:center;margin-top:18px;padding:0 30px}
-.footer .l1{font-size:14px;line-height:1.55}
+.footer{text-align:left;margin-top:22px;padding-top:12px;border-top:2.5px solid #000}
+.footer .l1{font-size:12.5px;line-height:1.5;max-width:900px}
 .footer .l2{font-size:12px;margin-top:4px}
 @media(max-width:900px){.wrap{flex-direction:column}.side{width:100%;flex:auto}}
 </style>
@@ -184,6 +186,7 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
   const COL={a:'#FB0207',b:'#0000FF'};
   function ticks(a,b,n){ const r=(b-a)||1, st=Math.pow(10,Math.floor(Math.log10(r/n))); const c=[1,2,2.5,5,10].map(k=>k*st).find(k=>r/k<=n+1); const o=[]; for(let v=Math.ceil(a/c-1e-9)*c; v<=b+1e-9; v+=c) o.push(+v.toFixed(6)); return o; }
   const minus=s=>String(s).replace('-','−');
+  const lc=s=>/^[A-Z][a-z]/.test(s)?s[0].toLowerCase()+s.slice(1):s;
   const fmtV=(v,m)=>v==null?'—':minus((m.k==='dfs'&&v>0?'+':'')+v.toFixed(m.fmt));
   let cur=null;
   function draw(){
@@ -214,13 +217,13 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     const runs=key=>{ const out=[]; let r=[]; for(let i=0;i<pts.length;i++){ const p=pts[i]; const v=p[key];
       if(v==null||(i>0&&p.y-pts[i-1].y>1)){ if(r.length) out.push(r); r=[]; } if(v!=null) r.push(p); } if(r.length) out.push(r); return out; };
     for(const [key,col] of [['b',COL.b],['a',COL.a]]){ const rs=runs(key);
-      rs.forEach((r,i)=>{ if(r.length>1) svg.appendChild(mk('path',{d:'M'+r.map(p=>`${x(p.y)},${yy(p[key])}`).join('L'),fill:'none',stroke:col,'stroke-width':2.6,'stroke-linejoin':'round'}));
-        if(i>0){ const q=rs[i-1][rs[i-1].length-1], p=r[0]; svg.appendChild(mk('path',{d:`M${x(q.y)},${yy(q[key])}L${x(p.y)},${yy(p[key])}`,fill:'none',stroke:col,'stroke-width':1.6,'stroke-dasharray':'3 4'})); } });
-      for(const p of pts){ if(p[key]!=null) svg.appendChild(mk('circle',{cx:x(p.y),cy:yy(p[key]),r:4.2,fill:col,stroke:'#000','stroke-width':1.6})); } }
+      rs.forEach((r,i)=>{ if(r.length>1) svg.appendChild(mk('path',{d:'M'+r.map(p=>`${x(p.y)},${yy(p[key])}`).join('L'),fill:'none',stroke:col,'stroke-width':3.6,'stroke-linejoin':'round','stroke-linecap':'round'}));
+        if(i>0){ const q=rs[i-1][rs[i-1].length-1], p=r[0]; svg.appendChild(mk('path',{d:`M${x(q.y)},${yy(q[key])}L${x(p.y)},${yy(p[key])}`,fill:'none',stroke:col,'stroke-width':2.2,'stroke-dasharray':'3 5','stroke-linecap':'round'})); } });
+      for(const p of pts){ if(p[key]!=null) svg.appendChild(mk('circle',{cx:x(p.y),cy:yy(p[key]),r:5.2,fill:col,stroke:'#000','stroke-width':1.8})); } }
     // end labels (wide) or an unboxed legend (narrow)
     if(wide){ const last=key=>[...pts].reverse().find(p=>p[key]!=null); const la=last('a'), lb=last('b');
       let ya=la?yy(la.a):null, yb=lb?yy(lb.b):null; if(ya!=null&&yb!=null&&Math.abs(ya-yb)<14){ const mid=(ya+yb)/2; if(ya<yb){ya=mid-7;yb=mid+7;} else {ya=mid+7;yb=mid-7;} }
-      const lab=(p,y0,txt)=>{ if(!p) return; svg.appendChild(mk('line',{x1:x(p.y)+6,x2:W-RM+13,y1:y0,y2:y0,stroke:'#000','stroke-width':1})); T(W-RM+16,y0+4,txt,{'font-size':10.5}); };
+      const lab=(p,y0,txt)=>{ if(!p) return; svg.appendChild(mk('line',{x1:x(p.y)+7,x2:W-RM+13,y1:y0,y2:y0,stroke:'#000','stroke-width':1.2})); T(W-RM+16,y0+4,txt,{'font-size':11.5}); };
       lab(la,ya,S.labA); lab(lb,yb,S.labB); }
     else { let lx=LM, ly=TM-8; for(const [lab,col] of [[S.labA,COL.a],[S.labB,COL.b]]){ svg.appendChild(mk('rect',{x:lx,y:ly,width:12,height:12,fill:col,stroke:'#000','stroke-width':1.2})); T(lx+16,ly+10,lab,{'font-size':10.5}); lx+=16+lab.length*6.4+16; if(lx>W-RM-120){ lx=LM; ly+=16; } } }
     // hover
@@ -237,10 +240,10 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     drawTable(S); }
   function hlRow(y){ document.querySelectorAll('table.nums tr[data-y]').forEach(tr=>tr.classList.toggle('hl',+tr.dataset.y===y)); }
   function drawTable(S){ const {m,pts}=S; const sch=state.level==='schools';
-    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>Tested${sch?' (schools)':''}<br>${S.labA.toLowerCase()}</th><th>Tested${sch?' (schools)':''}<br>${S.labB.toLowerCase()}</th></tr></thead><tbody>`;
+    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>Tested${sch?' (schools)':''}<br>${lc(S.labA)}</th><th>Tested${sch?' (schools)':''}<br>${lc(S.labB)}</th></tr></thead><tbody>`;
     for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?p.b-p.a:null; const n=(v,s)=>v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
       h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':minus((gap>0?'+':'')+gap.toFixed(m.fmt))}</td><td>${n(p.na,p.sa)}</td><td>${n(p.nb,p.sb)}</td></tr>`; }
-    h+=`</tbody></table><p class="tblnote">Difference = ${S.labB.toLowerCase()} minus ${S.labA.toLowerCase()}. — = not published${state.level==='school'?' (fewer than 11 students)':''}.</p>`; $('tablewrap').innerHTML=h; }
+    h+=`</tbody></table><p class="tblnote">Difference = ${lc(S.labB)} minus ${lc(S.labA)}. — = not published${state.level==='school'?' (fewer than 11 students)':''}.</p>`; $('tablewrap').innerHTML=h; }
   function render(){ const lv=state.level; $('ctlWeight').classList.toggle('hide',lv!=='schools'); $('ctlPanel').classList.toggle('hide',lv!=='schools'); $('ctlSchool').classList.toggle('hide',lv!=='school');
     draw(); $('plotTitle').textContent=cur.title; $('plotSub').textContent=cur.sub+' · '+cur.m.grp.replace(', % of students','')+': '+cur.m.label.toLowerCase(); }
 
