@@ -161,7 +161,8 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
   const isNaep=()=>state.test==='naep';
   const measuresFor=()=>isNaep()?NMEASURES:MEASURES;
   const levelsFor=()=>isNaep()?LEVELS.slice(0,1):LEVELS;
-  const MBy=Object.fromEntries(MEASURES.concat(NMEASURES).map(m=>[m.k,m]));
+  const CMBy=Object.fromEntries(MEASURES.map(m=>[m.k,m])), NMBy=Object.fromEntries(NMEASURES.map(m=>[m.k,m]));
+  const MBy=new Proxy({},{get:(_,k)=>(isNaep()?NMBy:CMBy)[k]});   // measure keys overlap across tests ('mean')
   const LEVELS=[['state','All California students'],['schools','High schools: LCFF+ vs. other'],['school','Within one high school']];
   function pctile(score,year){ const t=D.pct[String(year)]; if(!t||score==null) return null; const p=t.p,s=t.s;
     if(score<=s[0]) return p[0]; if(score>=s[s.length-1]) return p[p.length-1];
