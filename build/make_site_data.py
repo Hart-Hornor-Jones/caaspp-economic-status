@@ -148,6 +148,45 @@ def main():
     cmp_ = pd.read_csv(DATA / "naep_ca_grade8_math_year_comparisons.csv")
     print("  naep: years", naep["years"], "| comparison columns:", list(cmp_.columns)[:12])
 
+    # ---- odds by year (statewide CAASPP and NAEP, plus the LCFF+ school groups) -----------------
+    # odds = p/(1-p) of being at (or above) a level; odds ratio = not-disadvantaged odds / disadvantaged odds
+    orows = []
+    LV = [("pct_level4_exceeded", "standard exceeded (level 4)"), ("pct_met_or_exceeded", "standard met or exceeded (levels 3-4)"),
+          ("pct_level3_met", "standard met, not exceeded (level 3)"), ("pct_level2_nearly_met", "standard nearly met (level 2)"),
+          ("pct_level1_not_met", "standard not met (level 1)")]
+    def odds(v):
+        return None if v is None or pd.isna(v) or v <= 0 or v >= 100 else round(float(v) / (100 - float(v)), 4)
+    sw = pd.read_csv(DATA / "statewide_all_groups.csv")
+    sw = sw[(sw.subject == SUBJECT) & (sw.grade == GRADE) & (sw.group_code.isin([31, 111]))]
+    for year, g in sw.groupby("year"):
+        a, b = g[g.group_code == 31], g[g.group_code == 111]
+        for col, lab in LV:
+            oa, ob = odds(a[col].iloc[0]) if len(a) else None, odds(b[col].iloc[0]) if len(b) else None
+            orows.append({"test": "CAASPP grade 11 mathematics", "comparison": "all California students", "year": int(year), "level": lab,
+                          "share_disadvantaged_pct": a[col].iloc[0] if len(a) else None, "share_not_disadvantaged_pct": b[col].iloc[0] if len(b) else None,
+                          "odds_disadvantaged": oa, "odds_not_disadvantaged": ob, "odds_ratio_not_over_disadvantaged": round(ob / oa, 4) if oa and ob else None})
+    la = agg[(agg.subject == SUBJECT) & (agg.weighting == "students") & (agg.school_set == "all_schools_reporting")]
+    for year, g in la.groupby("year"):
+        a, b = g[g.school_group == "LCFF+"], g[g.school_group == "Not LCFF+"]
+        for col, lab in LV:
+            oa, ob = odds(a[col].iloc[0]) if len(a) else None, odds(b[col].iloc[0]) if len(b) else None
+            orows.append({"test": "CAASPP grade 11 mathematics", "comparison": "LCFF+ vs. other high schools (student-weighted, all reporting)", "year": int(year), "level": lab,
+                          "share_disadvantaged_pct": a[col].iloc[0] if len(a) else None, "share_not_disadvantaged_pct": b[col].iloc[0] if len(b) else None,
+                          "odds_disadvantaged": oa, "odds_not_disadvantaged": ob, "odds_ratio_not_over_disadvantaged": round(ob / oa, 4) if oa and ob else None})
+    NLV = [("advanced", "at NAEP Advanced"), ("proficientUp", "at or above NAEP Proficient"), ("basicUp", "at or above NAEP Basic"),
+           ("proficientOnly", "at NAEP Proficient, not Advanced"), ("basicOnly", "at NAEP Basic, not Proficient"), ("belowBasic", "below NAEP Basic")]
+    for year in naep["years"]:
+        a, b = naep["groups"]["SED"].get(str(year), {}), naep["groups"]["NOT"].get(str(year), {})
+        for k, lab in NLV:
+            pa, pb = (a.get(k) or [None])[0], (b.get(k) or [None])[0]
+            oa, ob = odds(pa), odds(pb)
+            orows.append({"test": "NAEP grade 8 mathematics", "comparison": "all California students (NAEP sample)", "year": int(year), "level": lab,
+                          "share_disadvantaged_pct": pa, "share_not_disadvantaged_pct": pb,
+                          "odds_disadvantaged": oa, "odds_not_disadvantaged": ob, "odds_ratio_not_over_disadvantaged": round(ob / oa, 4) if oa and ob else None})
+    od = pd.DataFrame(orows)
+    od.to_csv(DATA / "odds_by_year.csv", index=False, encoding="utf-8", lineterminator="\n")
+    print(f"  odds_by_year.csv: {len(od):,} rows")
+
     payload = {"generated": dt.date.today().isoformat(), "subject": SUBJECT, "grade": GRADE,
                "standard": STANDARD[SUBJECT], "years": VIZ_YEARS, "cols": SHORT, "lcff_cut": LCFF_CUT,
                "pct": pct, "state": state, "agg": aggjs, "schools": schools, "naep": naep}

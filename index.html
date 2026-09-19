@@ -112,6 +112,7 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
   <p style="margin:0 0 6px"><b>LCFF+</b> high schools have more than 75% low-income, English-learner, or foster-youth students (the unduplicated pupil percentage), on their 2016&ndash;17 to 2019&ndash;20 average; the two sets of schools are fixed. Each school enters with its all-students results. &ldquo;Students&rdquo; weights schools by students tested; &ldquo;schools&rdquo; weights them equally. &ldquo;Same every year&rdquo; keeps schools with results in all nine years.</p>
   <p style="margin:0 0 6px"><b>Within one high school</b> compares the two student groups inside the chosen school; adding schools pools them, with each school's group weighted by its students tested, so the pooled figures are what a single combined school would report. Cells CDE suppresses (fewer than 11 students) are left out, and a school with a suppressed cell drops out of the pool for that year and group.</p>
   <p style="margin:0 0 6px"><b>Measures.</b> Distance from standard subtracts the grade-11 mathematics standard-met cut score, 2628. The percentile measures place the group's mean score in the statewide distribution of all tested students, using CDE's published percentile tables (1st, 10th, 20th, &hellip; 90th, 99th) with straight-line interpolation between the published points; one uses the same year's distribution, the other the 2019 distribution throughout. Level shares are percentages of tested students.</p>
+  <p style="margin:0 0 6px"><b>Odds.</b> For each achievement level the share of students at (or above) it, p, can also be read as odds, p/(1&minus;p): a share of 20% is odds of 0.25, a share of 50% is odds of 1. Odds are plotted on a logarithmic axis, and the gap between the groups is reported as an odds ratio rather than a difference. Unlike a difference in percentage points, an odds ratio is not squeezed when both shares are near 0% or 100%, which makes gaps comparable across levels, years and tests.</p>
   <p style="margin:0 0 6px"><b>NAEP grade 8</b> is the National Assessment of Educational Progress, given to a sample of California eighth-graders (about 4,000 to 6,000 students) every other year, here 2015, 2017, 2019, 2022 and 2024, on a 0&ndash;500 scale. NAEP's &ldquo;economically disadvantaged&rdquo; status is reported by schools; before 2024 it was labeled eligibility for the National School Lunch Program, and NAEP carries the earlier years forward as one series. Because NAEP is a sample, every estimate has a standard error, shown in the table; the data folder also has NAEP's own significance tests for each year-to-year change, results by parent education and by the school's share of lunch-eligible students, and the full ten-point score distributions.</p>
   <p style="margin:0"><b>Years</b> are spring administrations (2019 = school year 2018&ndash;19). No test in 2020; 2021 omitted because testing was optional and under half of students took part.</p>
  </div>
@@ -158,6 +159,10 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
     NM('belowBasic','Achievement levels, % of students','Below NAEP Basic','% of students below NAEP Basic',{pct:true}),
   ];
   const TESTS=[{k:'caaspp',label:'CAASPP grade 11 mathematics (state test, 2015\u20132025)'},{k:'naep',label:'NAEP grade 8 mathematics (national assessment, 2015\u20132024)'}];
+  // odds of clearing (or sitting at) each level: p/(1-p); plotted on a log axis; the group gap is an odds ratio
+  const oddsOf=m=>({k:'odds_'+m.k,grp:'Odds of each level',label:m.label.replace(/, % of students$/,''),axis:'Odds: '+m.axis.replace(/^% of (tested )?students,? (at |)/,'').replace(/^% of tested students, /,''),fmt:2,odds:true,
+    f:(r,y)=>{ const v=m.f(r,y); return (v==null||v>=100||v<=0)?null:v/(100-v); }, se:m.se?(r=>null):undefined });
+  MEASURES.push(...MEASURES.filter(m=>m.pct).map(oddsOf)); NMEASURES.push(...NMEASURES.filter(m=>m.pct).map(oddsOf));
   const isNaep=()=>state.test==='naep';
   const measuresFor=()=>isNaep()?NMEASURES:MEASURES;
   const levelsFor=()=>isNaep()?LEVELS.slice(0,1):LEVELS;
@@ -236,6 +241,8 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
   function ticks(a,b,n){ const r=(b-a)||1, st=Math.pow(10,Math.floor(Math.log10(r/n))); const c=[1,2,2.5,5,10].map(k=>k*st).find(k=>r/k<=n+1); const o=[]; for(let v=Math.ceil(a/c-1e-9)*c; v<=b+1e-9; v+=c) o.push(+v.toFixed(6)); return o; }
   const minus=s=>String(s).replace('-','−');
   const lc=s=>/^[A-Z][a-z]/.test(s)?s[0].toLowerCase()+s.slice(1):s;
+  const gapOf=(p,m)=>(p.a==null||p.b==null)?null:(m.odds?(p.a>0?p.b/p.a:null):p.b-p.a);
+  const fmtGap=(g,m)=>m.odds?('\u00d7'+g.toFixed(2)):minus((g>0?'+':'')+g.toFixed(m.fmt));
   const fmtV=(v,m)=>v==null?'—':minus((m.k==='dfs'&&v>0?'+':'')+v.toFixed(m.fmt));
   let cur=null;
   function draw(){
@@ -248,16 +255,19 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
     const vals=pts.flatMap(p=>[p.a,p.b]).filter(v=>v!=null);
     if(!vals.length){ T(W/2,H/2,'No published results for this selection.',{'text-anchor':'middle','font-size':13}); drawTable(S); return; }
     let lo=Math.min(...vals), hi=Math.max(...vals);
-    if(m.pct){ lo=0; } else if(m.zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); }
-    const pad=(hi-lo)*0.12||1; hi+=pad; if(!m.pct) lo-=pad;
-    const tk=ticks(lo,hi,5); if(!m.pct){ lo=Math.min(lo,tk[0]); }
+    let tk;
+    if(m.odds){ lo=Math.max(lo,0.005)/1.2; hi=hi*1.2; tk=[]; for(let e=-3;e<=2;e++) for(const f of [1,2,5]){ const t=f*Math.pow(10,e); if(t>=lo&&t<=hi) tk.push(t); }
+      if(tk.length>9) tk=tk.filter(t=>/^[15]/.test(t.toExponential(0))); }
+    else { if(m.pct){ lo=0; } else if(m.zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); }
+      const pad=(hi-lo)*0.12||1; hi+=pad; if(!m.pct) lo-=pad;
+      tk=ticks(lo,hi,5); if(!m.pct){ lo=Math.min(lo,tk[0]); } }
     const YRS=isNaep()?D.naep.years:YEARS, X0=2015, X1=2025;
-    const x=y=>LM+(y-X0)/(X1-X0)*pw, yy=v=>base-(v-lo)/(hi-lo)*ph;
+    const x=y=>LM+(y-X0)/(X1-X0)*pw, yy=m.odds? (v=>base-(Math.log(v)-Math.log(lo))/(Math.log(hi)-Math.log(lo))*ph) : (v=>base-(v-lo)/(hi-lo)*ph);
     // axes (left and bottom only), outward ticks, no gridlines
     svg.appendChild(mk('line',{x1:LM,x2:LM,y1:TM,y2:base,stroke:'#000','stroke-width':3}));
     svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:base,y2:base,stroke:'#000','stroke-width':3}));
     tk.forEach(t=>{ if(t<lo-1e-9||t>hi+1e-9) return; svg.appendChild(mk('line',{x1:LM-7,x2:LM,y1:yy(t),y2:yy(t),stroke:'#000','stroke-width':2}));
-      T(LM-10,yy(t)+4,minus((m.k==='dfs'&&t>0?'+':'')+(Number.isInteger(t)?String(t):t.toFixed(1))),{'text-anchor':'end','font-size':11}); });
+      T(LM-10,yy(t)+4,minus((m.k==='dfs'&&t>0?'+':'')+(Number.isInteger(t)?String(t):m.odds?String(+t.toPrecision(2)):t.toFixed(1))),{'text-anchor':'end','font-size':11}); });
     if(m.zero&&lo<0&&hi>0) svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:yy(0),y2:yy(0),stroke:'#000','stroke-width':1.5,'stroke-dasharray':'4 3'}));
     for(let y=X0;y<=X1;y++){ const on=YRS.includes(y); svg.appendChild(mk('line',{x1:x(y),x2:x(y),y1:base,y2:base+(on?7:4),stroke:'#000','stroke-width':on?2:1.2}));
       if(W>=560||y%2===1) T(x(y),base+20,String(y),{'text-anchor':'middle','font-size':10.5,fill:on?'#000':'#999'}); }
@@ -285,18 +295,18 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
     hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect(), sx=(ev.clientX-rect.left)*W/rect.width; const yr=X0+(sx-LM)/pw*(X1-X0);
       let best=null; for(const p of pts){ if(p.a==null&&p.b==null) continue; if(!best||Math.abs(p.y-yr)<Math.abs(best.y-yr)) best=p; } if(!best) return;
       guide.setAttribute('x1',x(best.y)); guide.setAttribute('x2',x(best.y)); guide.setAttribute('opacity',1); hlRow(best.y);
-      const gap=(best.a!=null&&best.b!=null)?best.b-best.a:null; const n=(v,s,se)=>isNaep()?(se==null?'':` (\u00b1${se.toFixed(1)} s.e.)`):v==null?'':` (${v.toLocaleString()} tested${s!=null?', '+s.toLocaleString()+' schools':''})`;
-      tip.innerHTML=`<div class="h">${best.y}</div>${S.labA}: ${fmtV(best.a,m)}${n(best.na,best.sa,best.sea)}<br>${S.labB}: ${fmtV(best.b,m)}${n(best.nb,best.sb,best.seb)}`+(gap!=null?`<br>Difference: ${minus((gap>0?'+':'')+gap.toFixed(m.fmt))}`:'');
+      const gap=gapOf(best,m); const n=(v,s,se)=>isNaep()?(se==null?'':` (\u00b1${se.toFixed(1)} s.e.)`):v==null?'':` (${v.toLocaleString()} tested${s!=null?', '+s.toLocaleString()+' schools':''})`;
+      tip.innerHTML=`<div class="h">${best.y}</div>${S.labA}: ${fmtV(best.a,m)}${n(best.na,best.sa,best.sea)}<br>${S.labB}: ${fmtV(best.b,m)}${n(best.nb,best.sb,best.seb)}`+(gap!=null?`<br>${m.odds?'Odds ratio':'Difference'}: ${fmtGap(gap,m)}`:'');
       tip.style.display='block'; const tw=tip.offsetWidth||240; tip.style.left=Math.min(ev.clientX+14,window.innerWidth-tw-8)+'px'; tip.style.top=(ev.clientY+14)+'px'; };
     hit.onmouseleave=()=>{ guide.setAttribute('opacity',0); tip.style.display='none'; hlRow(null); };
     drawTable(S); }
   function hlRow(y){ document.querySelectorAll('table.nums tr[data-y]').forEach(tr=>tr.classList.toggle('hl',+tr.dataset.y===y)); }
   function drawTable(S){ const {m,pts}=S; const sch=state.level==='schools'||(state.level==='school'&&state.schools.length>1);
     const nh=isNaep()?'Standard error':'Tested'+(sch?' (schools)':'');
-    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>${nh}<br>${lc(S.labA)}</th><th>${nh}<br>${lc(S.labB)}</th></tr></thead><tbody>`;
-    for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?p.b-p.a:null; const n=(v,s,se)=>isNaep()?(se==null?'—':se.toFixed(2)):v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
-      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':minus((gap>0?'+':'')+gap.toFixed(m.fmt))}</td><td>${n(p.na,p.sa,p.sea)}</td><td>${n(p.nb,p.sb,p.seb)}</td></tr>`; }
-    h+=`</tbody></table><p class="tblnote">Difference = ${lc(S.labB)} minus ${lc(S.labA)}. ${isNaep()?'NAEP estimates are from a sample; standard errors are NAEP\'s. Unweighted sample sizes '+D.naep.years.join(' / ')+': '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).na??'—').join(' / ')+' disadvantaged, '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).nb??'—').join(' / ')+' not.':'— = not published'+(state.level==='school'?' (fewer than 11 students)':'')+'.'}</p>`; $('tablewrap').innerHTML=h; }
+    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>${m.odds?'Odds ratio':'Difference'}</th><th>${nh}<br>${lc(S.labA)}</th><th>${nh}<br>${lc(S.labB)}</th></tr></thead><tbody>`;
+    for(const p of pts){ const gap=gapOf(p,m); const n=(v,s,se)=>isNaep()?(se==null?'—':m.odds?'—':se.toFixed(2)):v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
+      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':fmtGap(gap,m)}</td><td>${n(p.na,p.sa,p.sea)}</td><td>${n(p.nb,p.sb,p.seb)}</td></tr>`; }
+    h+=`</tbody></table><p class="tblnote">${m.odds?`Odds = share at the level divided by share not at it. Odds ratio = odds for ${lc(S.labB)} divided by odds for ${lc(S.labA)}. The axis is logarithmic, so equal vertical distances are equal ratios.`:`Difference = ${lc(S.labB)} minus ${lc(S.labA)}.`} ${isNaep()?'NAEP estimates are from a sample; standard errors are NAEP\'s. Unweighted sample sizes '+D.naep.years.join(' / ')+': '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).na??'—').join(' / ')+' disadvantaged, '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).nb??'—').join(' / ')+' not.':'— = not published'+(state.level==='school'?' (fewer than 11 students)':'')+'.'}</p>`; $('tablewrap').innerHTML=h; }
   function render(){ if(isNaep()){ state.level='state'; if(!NMEASURES.some(m=>m.k===state.measure)) state.measure='mean'; } else if(!MEASURES.some(m=>m.k===state.measure)) state.measure='mean'; const lv=state.level; $('mwWeight').classList.toggle('hide',lv!=='schools'); $('mwPanel').classList.toggle('hide',lv!=='schools'); $('mwSchool').classList.toggle('hide',lv!=='school'); $('chips').classList.toggle('hide',lv!=='school'); if(lv==='school') drawChips();
     draw(); $('plotTitle').textContent=cur.title; $('plotSub').textContent=cur.sub+' · '+cur.m.grp.replace(', % of students','')+': '+cur.m.label.toLowerCase(); }
 
@@ -326,9 +336,9 @@ The data behind the page are in the repository's <a id="dataLink" href="data/">d
       `<div class="hint">In the print dialog choose Save as PDF, keep margins at None and scale at 100%; the page size matches the figure. Close this tab afterwards.</div>`+
       serialize(fig.svg).replace(/^<\?xml[^>]*>\n?/,'')+'</body></html>'); w.document.close(); w.focus(); setTimeout(()=>w.print(),400); }
   function csvOfChart(){ if(!cur) return null; const {m,pts}=cur; const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"'; const sch=state.level==='schools';
-    const nk=isNaep()?'se':'tested'; const cols=['year','group_a',`value_a:${m.k}`,nk+'_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,nk+'_b',...(sch?['schools_b']:[]),'difference_b_minus_a'];
-    const rows=[cols.join(',')]; for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?(p.b-p.a).toFixed(3):'';
-      rows.push([p.y,q(cur.labA),p.a==null?'':+p.a.toFixed(3),(isNaep()?p.sea:p.na)??'',...(sch?[p.sa??'']:[]),q(cur.labB),p.b==null?'':+p.b.toFixed(3),(isNaep()?p.seb:p.nb)??'',...(sch?[p.sb??'']:[]),gap].join(',')); }
+    const nk=isNaep()?'se':'tested'; const cols=['year','group_a',`value_a:${m.k}`,nk+'_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,nk+'_b',...(sch?['schools_b']:[]),m.odds?'odds_ratio_b_over_a':'difference_b_minus_a'];
+    const rows=[cols.join(',')]; for(const p of pts){
+      rows.push([p.y,q(cur.labA),p.a==null?'':+p.a.toFixed(3),(isNaep()?p.sea:p.na)??'',...(sch?[p.sa??'']:[]),q(cur.labB),p.b==null?'':+p.b.toFixed(3),(isNaep()?p.seb:p.nb)??'',...(sch?[p.sb??'']:[]),gapOf(p,m)==null?'':gapOf(p,m).toFixed(3)].join(',')); }
     return `# ${cur.title}\n# ${cur.sub}\n# measure: ${m.grp} - ${m.label}; data build ${D.generated}; exported ${new Date().toISOString().slice(0,10)}\n`+rows.join('\n')+'\n'; }
   async function doExport(kind){
     if(kind==='csv'){ const c=csvOfChart(); if(!c){ note('Nothing plotted to export.',3000); return; } download(new Blob([c],{type:'text/csv;charset=utf-8'}),figName('csv')); note('CSV downloaded.',2500); return; }

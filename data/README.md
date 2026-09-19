@@ -76,6 +76,17 @@ LCFF+ vs. other high schools, by year and subject, from each school's all-studen
 | `schools`, `tested` | number of schools; students tested |
 | `mean_scale_score`, `pct_level4_exceeded`, `pct_level3_met`, `pct_met_or_exceeded`, `pct_level2_nearly_met`, `pct_level1_not_met` | weighted means of the school values |
 
+## odds_by_year.csv  (derived)
+The achievement-level shares of the two groups re-expressed as odds, p/(1−p), with the between-group odds
+ratio, by year: statewide CAASPP grade 11 (2015–2025), LCFF+ vs. other high schools (student-weighted, all
+reporting schools), and NAEP grade 8 (2015–2024). Odds are blank when a share is 0% or 100%.
+
+| column | |
+|---|---|
+| `test`, `comparison`, `year`, `level` | |
+| `share_disadvantaged_pct`, `share_not_disadvantaged_pct` | the published shares (for the LCFF+ rows, the two sets of schools) |
+| `odds_disadvantaged`, `odds_not_disadvantaged`, `odds_ratio_not_over_disadvantaged` | |
+
 ## scale_score_percentiles.csv
 CDE's published statewide percentile tables: the scale score at the 1st, 10th, 20th, …, 90th, and
 99th percentile of all tested students, by year, subject, and grade (3–8 and 11).

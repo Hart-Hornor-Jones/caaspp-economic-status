@@ -17,8 +17,8 @@ Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 
 ## Rebuilding
 
-`data.js` and the two derived files in `data/` (`schools_lcff_classification.csv`,
-`school_aggregates_by_lcff.csv`) are reproduced from the other files in `data/` by
+`data.js` and the three derived files in `data/` (`schools_lcff_classification.csv`,
+`school_aggregates_by_lcff.csv`, `odds_by_year.csv`) are reproduced from the other files in `data/` by
 
     python build/make_site_data.py
 
