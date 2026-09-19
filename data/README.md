@@ -99,11 +99,11 @@ grade-year and the later one, for the students matched across both. Reports for 
 
 ## naep_ca_grade8_math_by_ses.csv
 NAEP Data Service estimates for California public-school students, grade 8 mathematics (composite scale,
-0–500), assessment years 2019, 2022 and 2024, one row per year × student group × statistic. Groups: all
+0–500), assessment years 2015, 2017, 2019, 2022 and 2024, one row per year × student group × statistic. Groups: all
 students (`TOTAL`); economically disadvantaged / not / information not available (`ECONDIS`; before 2024
 this was eligibility for the National School Lunch Program, which NAEP carries forward as one series);
 highest parent education (`PARED`, five levels); and the school-reported share of students eligible for
-free or reduced-price lunch (`C051651`, nine bands — many California cells fail NAEP reporting standards).
+free or reduced-price lunch (`SCHOOL_FRPL_PCT`, nine bands; NAEP's own code is `C051601` through 2017 and `C051651` from 2019, kept in `api_variable_code` — many California cells fail NAEP reporting standards).
 Statistics: average score, standard deviation, 10th/25th/50th/75th/90th percentile scores, percentages at
 and at-or-above each NAEP achievement level, share of students in the group, and the score distribution in
 ten-point bins. Retrieved from the NAEP API on 2026-09-19; the exact request is in `source_url`.
@@ -111,7 +111,7 @@ ten-point bins. Retrieved from the NAEP API on 2026-09-19; the exact request is 
 | column | |
 |---|---|
 | `subject`, `grade`, `scale`, `jurisdiction`, `year` | |
-| `ses_variable_code`, `ses_variable`, `ses_level_code`, `ses_level` | the student group |
+| `ses_variable_code`, `ses_variable`, `api_variable_code`, `api_variable`, `ses_level_code`, `ses_level` | the student group |
 | `statistic_code`, `statistic_family`, `statistic`, `unit`, `percentile`, `achievement_level`, `score_interval_low`, `score_interval_high` | what the row measures |
 | `estimate`, `standard_error` | blank when NAEP marks the statistic not displayable |
 | `cell_n` | unweighted number of sampled students (not a population count) |
@@ -119,6 +119,6 @@ ten-point bins. Retrieved from the NAEP API on 2026-09-19; the exact request is 
 | `source_url` | the API request that returned the row |
 
 ## naep_ca_grade8_math_year_comparisons.csv
-NAEP's own significance tests for each pair of years (2019→2022, 2022→2024, 2019→2024), for the means,
+NAEP's own significance tests for every pair of assessment years (2015 through 2024), for the means,
 percentile scores and achievement-level percentages in the file above. `change_followup_minus_baseline` is
 positive when the later year is higher; `official_significance` is NAEP's verdict at the .05 level.

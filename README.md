@@ -3,7 +3,7 @@
 California students' mathematics results split into economically disadvantaged students and everyone
 else: the state's CAASPP grade-11 test, 2015–2025 (statewide, across high schools grouped by LCFF+
 status, and within any one high school or pooled set of schools), and the national NAEP grade-8
-assessment, 2019–2024 (statewide sample). A small interactive chart, and the data files behind it.
+assessment, 2015–2024 (statewide sample). A small interactive chart, and the data files behind it.
 
 Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 

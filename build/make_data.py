@@ -13,7 +13,7 @@ Sources (all California Department of Education, CAASPP / Smarter Balanced, publ
   scale_score_percentiles.csv     CDE's published scale-score percentile tables (one per test year)
   same_students_growth.csv        CAASPP technical-report appendix tables following the same students
                                   from one grade to the next (grades 3-8 only; grade 11 is never followed)
-  naep_ca_grade8_math_by_ses.csv  NAEP Data Service estimates, California grade 8 mathematics, 2019/2022/2024,
+  naep_ca_grade8_math_by_ses.csv  NAEP Data Service estimates, California grade 8 mathematics, 2015-2024,
                                   by economic-disadvantage status, parent education and school lunch share
   naep_ca_grade8_math_year_comparisons.csv   NAEP's official across-year significance tests for the same
 
@@ -128,11 +128,11 @@ def main():
     write(t, "same_students_growth.csv")
 
     # 7. NAEP grade 8 mathematics, California, by SES ---------------------------------------------
-    n = pd.read_csv(NAEP / "naep_ca_grade8_math_ses_estimates_2019_2024.csv")
+    n = pd.read_csv(NAEP / "naep_ca_grade8_math_ses_estimates_2015_2024.csv")
     n = n.drop(columns=["retrieved_at_utc", "program", "subject_code", "scale_code", "jurisdiction_code", "sample",
                         "data_key", "value_raw", "standard_error_raw", "error_flag"])
     write(n, "naep_ca_grade8_math_by_ses.csv")
-    c = pd.read_csv(NAEP / "naep_ca_grade8_math_ses_year_comparisons_2019_2024.csv")
+    c = pd.read_csv(NAEP / "naep_ca_grade8_math_ses_year_comparisons_2015_2024.csv")
     write(c, "naep_ca_grade8_math_year_comparisons.csv")
     print("done.")
 
