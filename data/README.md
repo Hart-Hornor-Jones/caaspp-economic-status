@@ -96,3 +96,29 @@ grade-year and the later one, for the students matched across both. Reports for 
 | `subject`, `group`, `students` | students matched in that table |
 | `year`, `grade` | the administration each row describes |
 | `mean_scale_score`, `sd_scale_score`, `pct_level1_not_met`, `pct_level2_nearly_met`, `pct_level3_met`, `pct_level4_exceeded`, `pct_met_or_exceeded` | |
+
+## naep_ca_grade8_math_by_ses.csv
+NAEP Data Service estimates for California public-school students, grade 8 mathematics (composite scale,
+0–500), assessment years 2019, 2022 and 2024, one row per year × student group × statistic. Groups: all
+students (`TOTAL`); economically disadvantaged / not / information not available (`ECONDIS`; before 2024
+this was eligibility for the National School Lunch Program, which NAEP carries forward as one series);
+highest parent education (`PARED`, five levels); and the school-reported share of students eligible for
+free or reduced-price lunch (`C051651`, nine bands — many California cells fail NAEP reporting standards).
+Statistics: average score, standard deviation, 10th/25th/50th/75th/90th percentile scores, percentages at
+and at-or-above each NAEP achievement level, share of students in the group, and the score distribution in
+ten-point bins. Retrieved from the NAEP API on 2026-09-19; the exact request is in `source_url`.
+
+| column | |
+|---|---|
+| `subject`, `grade`, `scale`, `jurisdiction`, `year` | |
+| `ses_variable_code`, `ses_variable`, `ses_level_code`, `ses_level` | the student group |
+| `statistic_code`, `statistic_family`, `statistic`, `unit`, `percentile`, `achievement_level`, `score_interval_low`, `score_interval_high` | what the row measures |
+| `estimate`, `standard_error` | blank when NAEP marks the statistic not displayable |
+| `cell_n` | unweighted number of sampled students (not a population count) |
+| `stat_cv`, `is_displayable`, `error_labels` | NAEP's quality flags |
+| `source_url` | the API request that returned the row |
+
+## naep_ca_grade8_math_year_comparisons.csv
+NAEP's own significance tests for each pair of years (2019→2022, 2022→2024, 2019→2024), for the means,
+percentile scores and achievement-level percentages in the file above. `change_followup_minus_baseline` is
+positive when the later year is higher; `official_significance` is NAEP's verdict at the .05 level.

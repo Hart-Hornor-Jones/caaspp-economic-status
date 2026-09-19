@@ -126,9 +126,31 @@ def main():
         schools.append(rec)
     schools.sort(key=lambda x: (x["n"].lower(), x["c"]))
 
+    # ---- NAEP grade 8 mathematics (statewide only) --------------------------------------------
+    nz = pd.read_csv(DATA / "naep_ca_grade8_math_by_ses.csv")
+    nz = nz[(nz.ses_variable_code.isin(["TOTAL", "ECONDIS"])) & (nz.statistic_family != "score distribution") & (nz.is_displayable == 1)]
+    NSTAT = {"MN:MN": "mean", "SD:SD": "sd", "PC:P1": "p10", "PC:P2": "p25", "PC:P5": "p50", "PC:P7": "p75", "PC:P9": "p90",
+             "ALC:BB": "belowBasic", "ALC:AB": "basicUp", "ALC:AP": "proficientUp", "ALC:AD": "advanced",
+             "ALD:BA": "basicOnly", "ALD:PR": "proficientOnly", "RP:RP": "share"}
+    NGRP = {("TOTAL", 1): "ALL", ("ECONDIS", 1): "SED", ("ECONDIS", 2): "NOT"}
+    naep = {"years": sorted(int(y) for y in nz.year.unique()), "groups": {}}
+    for (var, lev, year), g in nz.groupby(["ses_variable_code", "ses_level_code", "year"]):
+        key = NGRP.get((var, int(lev)))
+        if not key:
+            continue
+        mn = g[g.statistic_code == "MN:MN"]
+        row = {"n": int(mn.cell_n.iloc[0]) if len(mn) and pd.notna(mn.cell_n.iloc[0]) else None}   # unweighted sample size
+        for _, x in g.iterrows():
+            k = NSTAT.get(x.statistic_code)
+            if k:
+                row[k] = [r(x.estimate, 2), r(x.standard_error, 2)]
+        naep["groups"].setdefault(key, {})[str(int(year))] = row
+    cmp_ = pd.read_csv(DATA / "naep_ca_grade8_math_year_comparisons.csv")
+    print("  naep: years", naep["years"], "| comparison columns:", list(cmp_.columns)[:12])
+
     payload = {"generated": dt.date.today().isoformat(), "subject": SUBJECT, "grade": GRADE,
                "standard": STANDARD[SUBJECT], "years": VIZ_YEARS, "cols": SHORT, "lcff_cut": LCFF_CUT,
-               "pct": pct, "state": state, "agg": aggjs, "schools": schools}
+               "pct": pct, "state": state, "agg": aggjs, "schools": schools, "naep": naep}
     js = "window.CAASPP_ECON=" + json.dumps(payload, separators=(",", ":"), ensure_ascii=False) + ";\n"
     (REPO / "data.js").write_text(js, encoding="utf-8")
     print(f"  data.js: {len(js)/1e6:.2f} MB, {len(schools):,} schools, years {VIZ_YEARS[0]}-{VIZ_YEARS[-1]}")

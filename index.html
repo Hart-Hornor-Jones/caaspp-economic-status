@@ -72,11 +72,13 @@ table.nums tr.hl td{background:#000;color:#fff}
 </style>
 </head>
 <body><div class="page">
-<div class="bigtitle">CAASPP grade-11 mathematics, by economic status</div>
-<div class="subtitle">California, spring 2015 to spring 2025. Economically disadvantaged students compared with all other
-students: statewide, across high schools grouped by LCFF+ status, or within one high school or a pooled set of schools. The data behind the page are in
-the repository's <a id="dataLink" href="data/">data folder</a>.</div>
+<div class="bigtitle">Mathematics by economic status: CAASPP grade 11 and NAEP grade 8</div>
+<div class="subtitle">California public schools. Economically disadvantaged students compared with all other students, on two tests:
+the state's CAASPP grade-11 mathematics test (2015 to 2025; statewide, across high schools grouped by LCFF+ status, or within one
+high school or a pooled set of schools) and the national NAEP grade-8 mathematics assessment (2019, 2022, 2024; statewide sample).
+The data behind the page are in the repository's <a id="dataLink" href="data/">data folder</a>.</div>
 <div class="topbar">
+ <div class="menuwrap"><button class="ctlbtn" id="btnTest">Test &#9662;</button><div class="menu" id="menuTest"></div></div>
  <div class="menuwrap"><button class="ctlbtn" id="btnLevel">Compare &#9662;</button><div class="menu" id="menuLevel"></div></div>
  <div class="menuwrap"><button class="ctlbtn" id="btnMeasure">Measure &#9662;</button><div class="menu" id="menuMeasure"></div></div>
  <div class="menuwrap hide" id="mwWeight"><button class="ctlbtn" id="btnWeight">Average across &#9662;</button><div class="menu" id="menuWeight"></div></div>
@@ -110,11 +112,12 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
   <p style="margin:0 0 6px"><b>LCFF+</b> high schools have more than 75% low-income, English-learner, or foster-youth students (the unduplicated pupil percentage), on their 2016&ndash;17 to 2019&ndash;20 average; the two sets of schools are fixed. Each school enters with its all-students results. &ldquo;Students&rdquo; weights schools by students tested; &ldquo;schools&rdquo; weights them equally. &ldquo;Same every year&rdquo; keeps schools with results in all nine years.</p>
   <p style="margin:0 0 6px"><b>Within one high school</b> compares the two student groups inside the chosen school; adding schools pools them, with each school's group weighted by its students tested, so the pooled figures are what a single combined school would report. Cells CDE suppresses (fewer than 11 students) are left out, and a school with a suppressed cell drops out of the pool for that year and group.</p>
   <p style="margin:0 0 6px"><b>Measures.</b> Distance from standard subtracts the grade-11 mathematics standard-met cut score, 2628. The percentile measures place the group's mean score in the statewide distribution of all tested students, using CDE's published percentile tables (1st, 10th, 20th, &hellip; 90th, 99th) with straight-line interpolation between the published points; one uses the same year's distribution, the other the 2019 distribution throughout. Level shares are percentages of tested students.</p>
+  <p style="margin:0 0 6px"><b>NAEP grade 8</b> is the National Assessment of Educational Progress, given to a sample of California eighth-graders (about 5,000 to 6,000 students) in 2019, 2022 and 2024 on a 0&ndash;500 scale. NAEP's &ldquo;economically disadvantaged&rdquo; status is reported by schools; before 2024 it was labeled eligibility for the National School Lunch Program, and NAEP carries the earlier years forward as one series. Because NAEP is a sample, every estimate has a standard error, shown in the table; the data folder also has NAEP's own significance tests for each year-to-year change, results by parent education and by the school's share of lunch-eligible students, and the full ten-point score distributions.</p>
   <p style="margin:0"><b>Years</b> are spring administrations (2019 = school year 2018&ndash;19). No test in 2020; 2021 omitted because testing was optional and under half of students took part.</p>
  </div>
 </main>
 </div>
-<div class="footer"><div class="l1">Data: California Department of Education, CAASPP Smarter Balanced results by student group (statewide and school-level research files, 2015&ndash;2025), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables.</div><div class="l2" id="footurl"></div></div>
+<div class="footer"><div class="l1">Data: California Department of Education, CAASPP Smarter Balanced results by student group (statewide and school-level research files, 2015&ndash;2025), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables; NAEP Data Service (NCES), California grade 8 mathematics, 2019, 2022 and 2024.</div><div class="l2" id="footurl"></div></div>
 </div>
 <div id="tip"></div>
 <script src="data.js"></script>
@@ -138,27 +141,48 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     {k:'L2',grp:'Achievement levels, % of students',label:'Standard nearly met (level 2)',axis:'% of tested students, standard nearly met',fmt:1,pct:true,f:r=>r[5]},
     {k:'L1',grp:'Achievement levels, % of students',label:'Standard not met (level 1)',axis:'% of tested students, standard not met',fmt:1,pct:true,f:r=>r[6]},
   ];
-  const MBy=Object.fromEntries(MEASURES.map(m=>[m.k,m]));
+  const NM=(k,grp,label,axis,o)=>Object.assign({k,grp,label,axis,fmt:1,f:r=>r[k]?r[k][0]:null,se:r=>r[k]?r[k][1]:null},o||{});
+  const NMEASURES=[
+    NM('mean','Scale score (0\u2013500)','Average scale score','Average NAEP scale score'),
+    NM('p10','Scale score (0\u2013500)','10th percentile score','NAEP scale score, 10th percentile'),
+    NM('p25','Scale score (0\u2013500)','25th percentile score','NAEP scale score, 25th percentile'),
+    NM('p50','Scale score (0\u2013500)','50th percentile score (median)','NAEP scale score, median'),
+    NM('p75','Scale score (0\u2013500)','75th percentile score','NAEP scale score, 75th percentile'),
+    NM('p90','Scale score (0\u2013500)','90th percentile score','NAEP scale score, 90th percentile'),
+    NM('sd','Scale score (0\u2013500)','Standard deviation of scores','Standard deviation of NAEP scale scores'),
+    NM('advanced','Achievement levels, % of students','NAEP Advanced','% of students at NAEP Advanced',{pct:true}),
+    NM('proficientUp','Achievement levels, % of students','At or above NAEP Proficient','% of students at or above NAEP Proficient',{pct:true}),
+    NM('basicUp','Achievement levels, % of students','At or above NAEP Basic','% of students at or above NAEP Basic',{pct:true}),
+    NM('proficientOnly','Achievement levels, % of students','At NAEP Proficient, not Advanced','% of students at NAEP Proficient only',{pct:true}),
+    NM('basicOnly','Achievement levels, % of students','At NAEP Basic, not Proficient','% of students at NAEP Basic only',{pct:true}),
+    NM('belowBasic','Achievement levels, % of students','Below NAEP Basic','% of students below NAEP Basic',{pct:true}),
+  ];
+  const TESTS=[{k:'caaspp',label:'CAASPP grade 11 mathematics (state test, 2015\u20132025)'},{k:'naep',label:'NAEP grade 8 mathematics (national assessment, 2019\u20132024)'}];
+  const isNaep=()=>state.test==='naep';
+  const measuresFor=()=>isNaep()?NMEASURES:MEASURES;
+  const levelsFor=()=>isNaep()?LEVELS.slice(0,1):LEVELS;
+  const MBy=Object.fromEntries(MEASURES.concat(NMEASURES).map(m=>[m.k,m]));
   const LEVELS=[['state','All California students'],['schools','High schools: LCFF+ vs. other'],['school','Within one high school']];
   function pctile(score,year){ const t=D.pct[String(year)]; if(!t||score==null) return null; const p=t.p,s=t.s;
     if(score<=s[0]) return p[0]; if(score>=s[s.length-1]) return p[p.length-1];
     for(let i=1;i<s.length;i++){ if(score<=s[i]) return p[i-1]+(p[i]-p[i-1])*(score-s[i-1])/(s[i]-s[i-1]); } return null; }
 
   // ---- state & controls -----------------------------------------------------------------------
-  const state={level:'state',measure:'mean',weight:'students',panel:'all',schools:[]};
+  const state={test:'caaspp',level:'state',measure:'mean',weight:'students',panel:'all',schools:[]};
   const MAX_SCHOOLS=12;
   const schoolById=Object.fromEntries(D.schools.map(s=>[s.id,s]));
   const labelOf=s=>`${s.n} — ${s.d} (${s.c})`;
   const idByLabel=Object.fromEntries(D.schools.map(s=>[labelOf(s),s.id]));
   function menu(btn,host,items,get,set){ const render=()=>{ host.innerHTML=''; let g=null;
-      for(const it of items){ if(it.grp&&it.grp!==g){ g=it.grp; const d=document.createElement('div'); d.className='hd'; d.textContent=g; host.appendChild(d); }
+      for(const it of (typeof items==='function'?items():items)){ if(it.grp&&it.grp!==g){ g=it.grp; const d=document.createElement('div'); d.className='hd'; d.textContent=g; host.appendChild(d); }
         const b=document.createElement('button'); b.textContent=it.label; if(it.k===get()) b.className='on';
         b.onclick=e=>{ e.stopPropagation(); host.classList.remove('open'); set(it.k); }; host.appendChild(b); } };
     $(btn).onclick=e=>{ e.stopPropagation(); const open=host.classList.contains('open'); closeMenus(); if(!open){ render(); host.classList.add('open'); } }; }
   function closeMenus(){ document.querySelectorAll('.menu.open,.exportmenu.open').forEach(m=>m.classList.remove('open')); }
   document.addEventListener('click',closeMenus);
-  menu('btnLevel',$('menuLevel'),LEVELS.map(([k,label])=>({k,label})),()=>state.level,k=>{ state.level=k; render(); });
-  menu('btnMeasure',$('menuMeasure'),MEASURES,()=>state.measure,k=>{ state.measure=k; render(); });
+  menu('btnTest',$('menuTest'),TESTS,()=>state.test,k=>{ if(k!==state.test){ state.test=k; state.level='state'; state.measure='mean'; } render(); });
+  menu('btnLevel',$('menuLevel'),()=>levelsFor().map(([k,label])=>({k,label})),()=>state.level,k=>{ state.level=k; render(); });
+  menu('btnMeasure',$('menuMeasure'),()=>measuresFor(),()=>state.measure,k=>{ state.measure=k; render(); });
   menu('btnWeight',$('menuWeight'),[{k:'students',label:'Students (each school weighted by students tested)'},{k:'schools',label:'Schools (each school weighted equally)'}],()=>state.weight,k=>{ state.weight=k; render(); });
   menu('btnPanel',$('menuPanel'),[{k:'all',label:'All schools reporting in each year'},{k:'fixed',label:'The same schools in every year'}],()=>state.panel,k=>{ state.panel=k; render(); });
   { const dl=$('schoollist'); const frag=document.createDocumentFragment();
@@ -180,6 +204,10 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
   // ---- series ---------------------------------------------------------------------------------
   function series(){
     const m=MBy[state.measure]; let A,B,labA,labB,title,sub,extra={};
+    if(isNaep()){ const g=D.naep.groups; A=g.SED; B=g.NOT; labA='Economically disadvantaged'; labB='Not economically disadvantaged';
+      title='All California public-school students, grade-8 mathematics (NAEP)'; sub='NAEP California sample, by economic-disadvantage status (before 2024 reported as eligibility for the National School Lunch Program)';
+      const pts=D.naep.years.map(y=>{ const ra=A[String(y)], rb=B[String(y)]; return {y, a:ra?m.f(ra):null, b:rb?m.f(rb):null, sea:ra?m.se(ra):null, seb:rb?m.se(rb):null, na:ra?ra.n:null, nb:rb?rb.n:null, sa:null, sb:null}; });
+      return {m,pts,labA,labB,title,sub}; }
     if(state.level==='state'){ A=D.state.SED; B=D.state.NOT; labA='Economically disadvantaged'; labB='Not economically disadvantaged';
       title='All California public-school students, grade-11 mathematics'; sub='Statewide results by economic status, spring administrations'; }
     else if(state.level==='schools'){ const ag=D.agg[`${state.weight}|${state.panel}`];
@@ -222,20 +250,23 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     if(m.pct){ lo=0; } else if(m.zero){ lo=Math.min(lo,0); hi=Math.max(hi,0); }
     const pad=(hi-lo)*0.12||1; hi+=pad; if(!m.pct) lo-=pad;
     const tk=ticks(lo,hi,5); if(!m.pct){ lo=Math.min(lo,tk[0]); }
-    const x=y=>LM+(y-2015)/(2025-2015)*pw, yy=v=>base-(v-lo)/(hi-lo)*ph;
+    const YRS=isNaep()?D.naep.years:YEARS, X0=isNaep()?2019:2015, X1=2025;
+    const x=y=>LM+(y-X0)/(X1-X0)*pw, yy=v=>base-(v-lo)/(hi-lo)*ph;
     // axes (left and bottom only), outward ticks, no gridlines
     svg.appendChild(mk('line',{x1:LM,x2:LM,y1:TM,y2:base,stroke:'#000','stroke-width':3}));
     svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:base,y2:base,stroke:'#000','stroke-width':3}));
     tk.forEach(t=>{ if(t<lo-1e-9||t>hi+1e-9) return; svg.appendChild(mk('line',{x1:LM-7,x2:LM,y1:yy(t),y2:yy(t),stroke:'#000','stroke-width':2}));
       T(LM-10,yy(t)+4,minus((m.k==='dfs'&&t>0?'+':'')+(Number.isInteger(t)?String(t):t.toFixed(1))),{'text-anchor':'end','font-size':11}); });
     if(m.zero&&lo<0&&hi>0) svg.appendChild(mk('line',{x1:LM,x2:W-RM,y1:yy(0),y2:yy(0),stroke:'#000','stroke-width':1.5,'stroke-dasharray':'4 3'}));
-    for(let y=2015;y<=2025;y++){ const on=YEARS.includes(y); svg.appendChild(mk('line',{x1:x(y),x2:x(y),y1:base,y2:base+(on?7:4),stroke:'#000','stroke-width':on?2:1.2}));
+    for(let y=X0;y<=X1;y++){ const on=YRS.includes(y); svg.appendChild(mk('line',{x1:x(y),x2:x(y),y1:base,y2:base+(on?7:4),stroke:'#000','stroke-width':on?2:1.2}));
       if(W>=560||y%2===1) T(x(y),base+20,String(y),{'text-anchor':'middle','font-size':10.5,fill:on?'#000':'#999'}); }
-    T((x(2020)+x(2021))/2,base+33,'no test / optional',{'text-anchor':'middle','font-size':9.5,fill:'#555'});
+    if(!isNaep()) T((x(2020)+x(2021))/2,base+33,'no test / optional',{'text-anchor':'middle','font-size':9.5,fill:'#555'});
+    else T((x(2020)+x(2021))/2,base+33,'no test',{'text-anchor':'middle','font-size':9.5,fill:'#555'});
     T(0,0,m.axis,{transform:`rotate(-90) translate(${-(TM+ph/2)},14)`,'text-anchor':'middle','font-size':11.5});
     // lines: solid within each contiguous run, dashed across the 2019-2022 gap; dots outlined in black
     const runs=key=>{ const out=[]; let r=[]; for(let i=0;i<pts.length;i++){ const p=pts[i]; const v=p[key];
-      if(v==null||(i>0&&p.y-pts[i-1].y>1)){ if(r.length) out.push(r); r=[]; } if(v!=null) r.push(p); } if(r.length) out.push(r); return out; };
+      const gap=i>0&&(pts[i-1].y<2020&&p.y>2021 || (!isNaep()&&p.y-pts[i-1].y>1));
+      if(v==null||gap){ if(r.length) out.push(r); r=[]; } if(v!=null) r.push(p); } if(r.length) out.push(r); return out; };
     for(const [key,col] of [['b',COL.b],['a',COL.a]]){ const rs=runs(key);
       rs.forEach((r,i)=>{ if(r.length>1) svg.appendChild(mk('path',{d:'M'+r.map(p=>`${x(p.y)},${yy(p[key])}`).join('L'),fill:'none',stroke:col,'stroke-width':5,'stroke-linejoin':'round','stroke-linecap':'round'}));
         if(i>0){ const q=rs[i-1][rs[i-1].length-1], p=r[0]; svg.appendChild(mk('path',{d:`M${x(q.y)},${yy(q[key])}L${x(p.y)},${yy(p[key])}`,fill:'none',stroke:col,'stroke-width':3,'stroke-dasharray':'2 7','stroke-linecap':'round'})); } });
@@ -250,21 +281,22 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     const guide=mk('line',{x1:0,x2:0,y1:TM,y2:base,stroke:'#000','stroke-width':1,'stroke-dasharray':'2 3',opacity:0,'data-hover':1}); svg.appendChild(guide);
     const hit=mk('rect',{x:LM,y:TM,width:pw,height:ph,fill:'transparent','data-hover':1}); svg.appendChild(hit);
     const tip=$('tip');
-    hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect(), sx=(ev.clientX-rect.left)*W/rect.width; const yr=2015+(sx-LM)/pw*10;
+    hit.onmousemove=ev=>{ const rect=svg.getBoundingClientRect(), sx=(ev.clientX-rect.left)*W/rect.width; const yr=X0+(sx-LM)/pw*(X1-X0);
       let best=null; for(const p of pts){ if(p.a==null&&p.b==null) continue; if(!best||Math.abs(p.y-yr)<Math.abs(best.y-yr)) best=p; } if(!best) return;
       guide.setAttribute('x1',x(best.y)); guide.setAttribute('x2',x(best.y)); guide.setAttribute('opacity',1); hlRow(best.y);
-      const gap=(best.a!=null&&best.b!=null)?best.b-best.a:null; const n=(v,s)=>v==null?'':` (${v.toLocaleString()} tested${s!=null?', '+s.toLocaleString()+' schools':''})`;
-      tip.innerHTML=`<div class="h">${best.y}</div>${S.labA}: ${fmtV(best.a,m)}${n(best.na,best.sa)}<br>${S.labB}: ${fmtV(best.b,m)}${n(best.nb,best.sb)}`+(gap!=null?`<br>Difference: ${minus((gap>0?'+':'')+gap.toFixed(m.fmt))}`:'');
+      const gap=(best.a!=null&&best.b!=null)?best.b-best.a:null; const n=(v,s,se)=>isNaep()?(se==null?'':` (\u00b1${se.toFixed(1)} s.e.)`):v==null?'':` (${v.toLocaleString()} tested${s!=null?', '+s.toLocaleString()+' schools':''})`;
+      tip.innerHTML=`<div class="h">${best.y}</div>${S.labA}: ${fmtV(best.a,m)}${n(best.na,best.sa,best.sea)}<br>${S.labB}: ${fmtV(best.b,m)}${n(best.nb,best.sb,best.seb)}`+(gap!=null?`<br>Difference: ${minus((gap>0?'+':'')+gap.toFixed(m.fmt))}`:'');
       tip.style.display='block'; const tw=tip.offsetWidth||240; tip.style.left=Math.min(ev.clientX+14,window.innerWidth-tw-8)+'px'; tip.style.top=(ev.clientY+14)+'px'; };
     hit.onmouseleave=()=>{ guide.setAttribute('opacity',0); tip.style.display='none'; hlRow(null); };
     drawTable(S); }
   function hlRow(y){ document.querySelectorAll('table.nums tr[data-y]').forEach(tr=>tr.classList.toggle('hl',+tr.dataset.y===y)); }
   function drawTable(S){ const {m,pts}=S; const sch=state.level==='schools'||(state.level==='school'&&state.schools.length>1);
-    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>Tested${sch?' (schools)':''}<br>${lc(S.labA)}</th><th>Tested${sch?' (schools)':''}<br>${lc(S.labB)}</th></tr></thead><tbody>`;
-    for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?p.b-p.a:null; const n=(v,s)=>v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
-      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':minus((gap>0?'+':'')+gap.toFixed(m.fmt))}</td><td>${n(p.na,p.sa)}</td><td>${n(p.nb,p.sb)}</td></tr>`; }
-    h+=`</tbody></table><p class="tblnote">Difference = ${lc(S.labB)} minus ${lc(S.labA)}. — = not published${state.level==='school'?' (fewer than 11 students)':''}.</p>`; $('tablewrap').innerHTML=h; }
-  function render(){ const lv=state.level; $('mwWeight').classList.toggle('hide',lv!=='schools'); $('mwPanel').classList.toggle('hide',lv!=='schools'); $('mwSchool').classList.toggle('hide',lv!=='school'); $('chips').classList.toggle('hide',lv!=='school'); if(lv==='school') drawChips();
+    const nh=isNaep()?'Standard error':'Tested'+(sch?' (schools)':'');
+    let h=`<table class="nums"><thead><tr><th>Year</th><th>${S.labA}</th><th>${S.labB}</th><th>Difference</th><th>${nh}<br>${lc(S.labA)}</th><th>${nh}<br>${lc(S.labB)}</th></tr></thead><tbody>`;
+    for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?p.b-p.a:null; const n=(v,s,se)=>isNaep()?(se==null?'—':se.toFixed(2)):v==null?'—':v.toLocaleString()+(s!=null?` (${s.toLocaleString()})`:'');
+      h+=`<tr data-y="${p.y}"><td>${p.y}</td><td>${fmtV(p.a,m)}</td><td>${fmtV(p.b,m)}</td><td>${gap==null?'—':minus((gap>0?'+':'')+gap.toFixed(m.fmt))}</td><td>${n(p.na,p.sa,p.sea)}</td><td>${n(p.nb,p.sb,p.seb)}</td></tr>`; }
+    h+=`</tbody></table><p class="tblnote">Difference = ${lc(S.labB)} minus ${lc(S.labA)}. ${isNaep()?'NAEP estimates are from a sample; standard errors are NAEP\'s. Unweighted sample sizes 2019 / 2022 / 2024: '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).na??'—').join(' / ')+' disadvantaged, '+D.naep.years.map(y=>(S.pts.find(p=>p.y===y)||{}).nb??'—').join(' / ')+' not.':'— = not published'+(state.level==='school'?' (fewer than 11 students)':'')+'.'}</p>`; $('tablewrap').innerHTML=h; }
+  function render(){ if(isNaep()){ state.level='state'; if(!NMEASURES.some(m=>m.k===state.measure)) state.measure='mean'; } else if(!MEASURES.some(m=>m.k===state.measure)) state.measure='mean'; const lv=state.level; $('mwWeight').classList.toggle('hide',lv!=='schools'); $('mwPanel').classList.toggle('hide',lv!=='schools'); $('mwSchool').classList.toggle('hide',lv!=='school'); $('chips').classList.toggle('hide',lv!=='school'); if(lv==='school') drawChips();
     draw(); $('plotTitle').textContent=cur.title; $('plotSub').textContent=cur.sub+' · '+cur.m.grp.replace(', % of students','')+': '+cur.m.label.toLowerCase(); }
 
   // ---- export ---------------------------------------------------------------------------------
@@ -277,10 +309,10 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
     const clone=src.cloneNode(true); clone.querySelectorAll('[data-hover]').forEach(e=>e.remove());
     const g=mk('g',{transform:`translate(${PAD},${y})`,'font-family':FONT,'font-weight':700}); while(clone.firstChild) g.appendChild(clone.firstChild); root.appendChild(g); y+=ch+10;
     const page=(location.protocol.startsWith('http')?location.host+location.pathname:'caaspp-economic-status').replace(/index\.html$/,'');
-    add(`Data: California Department of Education, CAASPP results by student group (statewide and school-level research files), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables. Chart from ${page}, data build ${D.generated}, exported ${new Date().toISOString().slice(0,10)}.`,10,'#000',Math.floor(inner/6.2));
+    add(`Data: ${isNaep()?'NAEP Data Service (National Center for Education Statistics), California grade 8 mathematics by economic-disadvantage status.':'California Department of Education, CAASPP results by student group (statewide and school-level research files), CALPADS unduplicated pupil counts, and CDE scale-score percentile tables.'} Chart from ${page}, data build ${D.generated}, exported ${new Date().toISOString().slice(0,10)}.`,10,'#000',Math.floor(inner/6.2));
     y+=PAD-6; root.setAttribute('width',W); root.setAttribute('height',Math.round(y)); root.setAttribute('viewBox',`0 0 ${W} ${Math.round(y)}`); return {svg:root,w:W,h:Math.round(y)}; }
   const sanitize=s=>String(s||'').replace(/[^\w.\-]+/g,'_').replace(/^_+|_+$/g,'').slice(0,60);
-  function figName(ext){ const who= state.level==='state'?'statewide' : state.level==='schools'?`lcff_${state.weight}_${state.panel}` : sanitize(state.schools.map(id=>schoolById[id].n).join('+')); return `caaspp-econ_${who}_${state.measure}.${ext}`; }
+  function figName(ext){ const who= isNaep()?'naep-g8':state.level==='state'?'statewide' : state.level==='schools'?`lcff_${state.weight}_${state.panel}` : sanitize(state.schools.map(id=>schoolById[id].n).join('+')); return `caaspp-econ_${who}_${state.measure}.${ext}`; }
   const serialize=el=>'<?xml version="1.0" encoding="UTF-8"?>\n'+new XMLSerializer().serializeToString(el);
   function download(blob,name){ const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=name; document.body.appendChild(a); a.click(); setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); },1500); }
   function rasterize(fig,scale){ return new Promise((res,rej)=>{ const img=new Image(); img.onload=()=>{ const c=document.createElement('canvas'); c.width=Math.round(fig.w*scale); c.height=Math.round(fig.h*scale);
@@ -293,9 +325,9 @@ the repository's <a id="dataLink" href="data/">data folder</a>.</div>
       `<div class="hint">In the print dialog choose Save as PDF, keep margins at None and scale at 100%; the page size matches the figure. Close this tab afterwards.</div>`+
       serialize(fig.svg).replace(/^<\?xml[^>]*>\n?/,'')+'</body></html>'); w.document.close(); w.focus(); setTimeout(()=>w.print(),400); }
   function csvOfChart(){ if(!cur) return null; const {m,pts}=cur; const q=s=>'"'+String(s==null?'':s).replace(/"/g,'""')+'"'; const sch=state.level==='schools';
-    const cols=['year','group_a',`value_a:${m.k}`,'tested_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,'tested_b',...(sch?['schools_b']:[]),'difference_b_minus_a'];
+    const nk=isNaep()?'se':'tested'; const cols=['year','group_a',`value_a:${m.k}`,nk+'_a',...(sch?['schools_a']:[]),'group_b',`value_b:${m.k}`,nk+'_b',...(sch?['schools_b']:[]),'difference_b_minus_a'];
     const rows=[cols.join(',')]; for(const p of pts){ const gap=(p.a!=null&&p.b!=null)?(p.b-p.a).toFixed(3):'';
-      rows.push([p.y,q(cur.labA),p.a==null?'':+p.a.toFixed(3),p.na??'',...(sch?[p.sa??'']:[]),q(cur.labB),p.b==null?'':+p.b.toFixed(3),p.nb??'',...(sch?[p.sb??'']:[]),gap].join(',')); }
+      rows.push([p.y,q(cur.labA),p.a==null?'':+p.a.toFixed(3),(isNaep()?p.sea:p.na)??'',...(sch?[p.sa??'']:[]),q(cur.labB),p.b==null?'':+p.b.toFixed(3),(isNaep()?p.seb:p.nb)??'',...(sch?[p.sb??'']:[]),gap].join(',')); }
     return `# ${cur.title}\n# ${cur.sub}\n# measure: ${m.grp} - ${m.label}; data build ${D.generated}; exported ${new Date().toISOString().slice(0,10)}\n`+rows.join('\n')+'\n'; }
   async function doExport(kind){
     if(kind==='csv'){ const c=csvOfChart(); if(!c){ note('Nothing plotted to export.',3000); return; } download(new Blob([c],{type:'text/csv;charset=utf-8'}),figName('csv')); note('CSV downloaded.',2500); return; }

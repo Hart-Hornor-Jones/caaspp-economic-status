@@ -1,8 +1,9 @@
-# CAASPP grade-11 mathematics, by economic status
+# Mathematics by economic status: CAASPP grade 11 and NAEP grade 8
 
-California students' grade-11 CAASPP mathematics results, 2015–2025, split into economically
-disadvantaged students and everyone else — statewide, across high schools grouped by LCFF+ status,
-and within any one high school. A small interactive chart, and the data files behind it.
+California students' mathematics results split into economically disadvantaged students and everyone
+else: the state's CAASPP grade-11 test, 2015–2025 (statewide, across high schools grouped by LCFF+
+status, and within any one high school or pooled set of schools), and the national NAEP grade-8
+assessment, 2019–2024 (statewide sample). A small interactive chart, and the data files behind it.
 
 Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 
@@ -11,7 +12,7 @@ Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 | | |
 |---|---|
 | `index.html`, `data.js` | the chart (no dependencies; `data.js` is generated) |
-| `data/` | the data files — statewide results for every CDE student group, grade-11 results by economic status for every California school, school UPP and LCFF+ status, CDE's scale-score percentile tables, same-students growth tables. Column definitions in `data/README.md`. |
+| `data/` | the data files — statewide results for every CDE student group, grade-11 results by economic status for every California school, school UPP and LCFF+ status, CDE's scale-score percentile tables, same-students growth tables, and NAEP grade-8 mathematics estimates and significance tests by SES. Column definitions in `data/README.md`. |
 | `build/` | the scripts that produced `data/` and `data.js` |
 
 ## Rebuilding
@@ -28,5 +29,6 @@ those files and is included for documentation.
 ## Source and license
 
 All figures are from the California Department of Education (CAASPP research files, CALPADS
-unduplicated pupil counts, CAASPP technical reports and scale-score percentile tables). Code is
+unduplicated pupil counts, CAASPP technical reports and scale-score percentile tables) and the NAEP Data
+Service of the National Center for Education Statistics. Code is
 released under the MIT License; the data files are derived from public records.
