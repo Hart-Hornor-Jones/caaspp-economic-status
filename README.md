@@ -14,6 +14,7 @@ Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 | `index.html`, `data.js` | the chart (no dependencies; `data.js` is generated) |
 | `data/` | the data files — statewide results for every CDE student group, grade-11 results by economic status for every California school, school UPP and LCFF+ status, CDE's scale-score percentile tables, same-students growth tables, and NAEP grade-8 mathematics estimates and significance tests by SES. Column definitions in `data/README.md`. |
 | `build/` | the scripts that produced `data/` and `data.js` |
+| `tests/` | `check_data.py` (internal consistency of the data files and `data.js`; pandas only) and `render_check.py` (opens the page in headless Chromium and exercises every control; Playwright). Both run in GitHub Actions on every push. |
 
 ## Rebuilding
 
@@ -25,6 +26,15 @@ Live page: `https://hart-hornor-jones.github.io/caaspp-economic-status/`
 (pandas required). `build/make_data.py` records how the remaining files in `data/` were assembled
 from the California Department of Education's published research files; it reads local copies of
 those files and is included for documentation.
+
+## Checks
+
+    python tests/check_data.py
+    python tests/render_check.py
+
+The first needs pandas; the second needs Playwright and its Chromium (`pip install playwright`, then
+`playwright install chromium`, or set `CHROMIUM_EXECUTABLE` to a Chrome/Chromium binary). Both run on every
+push (`.github/workflows/checks.yml`); the data checks also run on Windows there.
 
 ## Source and license
 
